@@ -2,7 +2,7 @@
 Repozytorium projektu zespołowego PK, III rok, Informatyka, VI semestr
 
 
-Dodajcie do backend/src/main/resources/application.properties
+**Dodajcie do backend/src/main/resources/application.properties**
 
 spring.datasource.username= #Twój username# 
 
