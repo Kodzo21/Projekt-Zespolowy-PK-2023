@@ -8,10 +8,12 @@ import {FormsModule} from "@angular/forms";
 import {HttpClientModule} from "@angular/common/http";
 import {UserService} from "./_services/user.service";
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { CanvasComponent } from './canvas/canvas.component';
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    CanvasComponent
   ],
   imports: [
     BrowserModule,
