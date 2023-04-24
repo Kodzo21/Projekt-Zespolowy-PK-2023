@@ -1,7 +1,7 @@
 <section class="vh-100 vw-100" style="background-color:slategrey;">
   <div class="container">
     <div class="color-picker-container">
-      <input type="color" class="color-picker">
+      <app-color-picker (colorEvent)="pickColor($event)" />
       <button (click)="clearCanvas()">CLEAR!</button>
     </div>
 

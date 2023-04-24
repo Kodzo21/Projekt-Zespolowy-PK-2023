@@ -9,11 +9,13 @@ import {HttpClientModule} from "@angular/common/http";
 import {UserService} from "./_services/user.service";
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { CanvasComponent } from './canvas/canvas.component';
+import { ColorPickerComponent } from './canvas/color-picker/color-picker.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     CanvasComponent,
+    ColorPickerComponent,
   ],
   imports: [
     BrowserModule,

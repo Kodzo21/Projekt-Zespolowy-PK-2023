@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, ElementRef, Input, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, ElementRef, ViewChild} from '@angular/core';
 
 @Component({
   selector: 'app-canvas',
@@ -6,8 +6,6 @@ import {AfterViewInit, Component, ElementRef, Input, ViewChild} from '@angular/c
   styleUrls: ['./canvas.component.css']
 })
 export class CanvasComponent implements AfterViewInit {
-
-  @Input() color: string = "black";
 
   @ViewChild('board')
   private canvas!: ElementRef<HTMLCanvasElement>;
@@ -103,7 +101,7 @@ export class CanvasComponent implements AfterViewInit {
     e.preventDefault();
   }
 
-  addColor(value: string) {
+  pickColor(value: string) {
     this.context.strokeStyle = value;
   }
 }
