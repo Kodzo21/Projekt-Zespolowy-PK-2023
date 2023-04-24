@@ -13,7 +13,7 @@ import { CanvasComponent } from './canvas/canvas.component';
 @NgModule({
   declarations: [
     AppComponent,
-    CanvasComponent
+    CanvasComponent,
   ],
   imports: [
     BrowserModule,
