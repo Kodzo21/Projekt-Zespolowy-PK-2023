@@ -34,7 +34,6 @@ public class Group {
     @Column(name = "conversation_id")
     private int conversationId;
 
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
