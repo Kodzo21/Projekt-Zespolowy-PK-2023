@@ -32,8 +32,6 @@ public class Group {
     @Basic
     @Column(name = "conversation_id")
     private int conversationId;
-    @OneToMany(mappedBy = "groupByGroupId")
-    private Collection<GroupUser> groupUsersByGroupId;
 
     @Override
     public boolean equals(Object o) {
