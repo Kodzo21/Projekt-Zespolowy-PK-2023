@@ -38,10 +38,10 @@ public class Message {
     @OneToMany(mappedBy = "messageByMessageId")
     private Collection<File> filesByMessageId;
     @ManyToOne
-    @JoinColumn(name = "conversation_id", referencedColumnName = "conversation_id", nullable = false)
+    @JoinColumn(name = "conversation_id", referencedColumnName = "conversation_id", nullable = false,insertable = false,updatable = false)
     private Conversation conversationByConversationId;
     @ManyToOne
-    @JoinColumn(name = "user_sending_id", referencedColumnName = "user_id", nullable = false)
+    @JoinColumn(name = "user_sending_id", referencedColumnName = "user_id", nullable = false,insertable = false,updatable = false)
     private User userByUserSendingId;
 
     @Override

@@ -2,7 +2,6 @@ package com.example.gigachatb.user;
 
 import com.example.gigachatb.conversation.Conversation;
 import com.example.gigachatb.file.File;
-import com.example.gigachatb.group.GroupUser;
 import com.example.gigachatb.message.Message;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -44,8 +43,7 @@ public class User implements UserDetails {
     private Collection<Conversation> conversationsByUserId;
     @OneToMany(mappedBy = "userByUserUploadingId")
     private Collection<File> filesByUserId;
-    @OneToMany(mappedBy = "userByUserId")
-    private Collection<GroupUser> groupUsersByUserId;
+
     @OneToMany(mappedBy = "userByUserSendingId")
     private Collection<Message> messagesByUserId;
 

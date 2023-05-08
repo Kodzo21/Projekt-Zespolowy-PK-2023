@@ -30,11 +30,13 @@ public class Conversation {
     @Column(name = "start_time")
     private Timestamp startTime;
     @ManyToOne
-    @JoinColumn(name = "user_id", referencedColumnName = "user_id", nullable = false)
+    @JoinColumn(name = "user_id", referencedColumnName = "user_id", nullable = false,insertable = false,updatable = false)
     private User userByUserId;
     @OneToMany(mappedBy = "conversationByConversationId")
+    @Column(insertable = false,updatable = false)
     private Collection<File> filesByConversationId;
     @OneToMany(mappedBy = "conversationByConversationId")
+    @Column(insertable = false,updatable = false)
     private Collection<Message> messagesByConversationId;
 
 
