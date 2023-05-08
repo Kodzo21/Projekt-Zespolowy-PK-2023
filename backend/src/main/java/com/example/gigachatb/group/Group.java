@@ -15,6 +15,7 @@ import java.util.Objects;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
+@Table(name = "_group", schema = "public", catalog = "")
 public class Group {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
@@ -32,8 +33,7 @@ public class Group {
     @Basic
     @Column(name = "conversation_id")
     private int conversationId;
-    @OneToMany(mappedBy = "groupByGroupId")
-    private Collection<GroupUser> groupUsersByGroupId;
+
 
     @Override
     public boolean equals(Object o) {

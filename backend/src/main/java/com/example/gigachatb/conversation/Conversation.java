@@ -30,36 +30,15 @@ public class Conversation {
     @Column(name = "start_time")
     private Timestamp startTime;
     @ManyToOne
-    @JoinColumn(name = "user_id", referencedColumnName = "user_id", nullable = false)
+    @JoinColumn(name = "user_id", referencedColumnName = "user_id", nullable = false,insertable = false,updatable = false)
     private User userByUserId;
     @OneToMany(mappedBy = "conversationByConversationId")
+    @Column(insertable = false,updatable = false)
     private Collection<File> filesByConversationId;
     @OneToMany(mappedBy = "conversationByConversationId")
+    @Column(insertable = false,updatable = false)
     private Collection<Message> messagesByConversationId;
 
-    public int getConversationId() {
-        return conversationId;
-    }
-
-    public void setConversationId(int conversationId) {
-        this.conversationId = conversationId;
-    }
-
-    public int getUserId() {
-        return userId;
-    }
-
-    public void setUserId(int userId) {
-        this.userId = userId;
-    }
-
-    public Timestamp getStartTime() {
-        return startTime;
-    }
-
-    public void setStartTime(Timestamp startTime) {
-        this.startTime = startTime;
-    }
 
     @Override
     public boolean equals(Object o) {
@@ -74,27 +53,4 @@ public class Conversation {
         return Objects.hash(conversationId, userId, startTime);
     }
 
-    public User getUserByUserId() {
-        return userByUserId;
-    }
-
-    public void setUserByUserId(User userByUserId) {
-        this.userByUserId = userByUserId;
-    }
-
-    public Collection<File> getFilesByConversationId() {
-        return filesByConversationId;
-    }
-
-    public void setFilesByConversationId(Collection<File> filesByConversationId) {
-        this.filesByConversationId = filesByConversationId;
-    }
-
-    public Collection<Message> getMessagesByConversationId() {
-        return messagesByConversationId;
-    }
-
-    public void setMessagesByConversationId(Collection<Message> messagesByConversationId) {
-        this.messagesByConversationId = messagesByConversationId;
-    }
 }
