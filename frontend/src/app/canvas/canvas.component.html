@@ -1,8 +1,11 @@
-<section class="vh-100 vw-100" style="background-color:slategrey;">
+<section class="vh-100 vw-100">
   <div class="container">
     <div class="color-picker-container">
       <app-color-picker (colorEvent)="pickColor($event)" />
       <button (click)="clearCanvas()">CLEAR!</button>
+    </div>
+    <div class="line-width-picker-container">
+
     </div>
 
     <div class="board-container">

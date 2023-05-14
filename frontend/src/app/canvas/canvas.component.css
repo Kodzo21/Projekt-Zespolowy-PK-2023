@@ -1,7 +1,7 @@
 .container {
   height: 100vh;
   width: 100vw;
-  background-color: #ef8f10;
+  background-color: rgb(255, 255, 255, 0);
 }
 
 .color-picker-container {
@@ -27,5 +27,5 @@
 .board {
   width: 100%;
   height: 100%;
-  background-color: #3c2451;
+  background-color: rgb(255, 255, 255, 0);
 }

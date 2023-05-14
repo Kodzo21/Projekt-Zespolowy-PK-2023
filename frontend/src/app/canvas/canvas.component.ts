@@ -10,98 +10,124 @@ export class CanvasComponent implements AfterViewInit {
   @ViewChild('board')
   private canvas!: ElementRef<HTMLCanvasElement>;
 
+
+  private width: number = 1000;
+  private height: number = 1000;
+
+  // tested offset multipliers
+  private offSetXMulti: number = 1.6;
+  private offSetYMulti: number = 1.48;
+
   private context: CanvasRenderingContext2D = {} as CanvasRenderingContext2D;
+
+  private prevPos!: {
+    x: number,
+    y: number }
+
   private paint: boolean = false;
 
-  private clickX: number[] = [];
-  private clickY: number[] = [];
-  private clickDrag: boolean[] = [];
-
   ngAfterViewInit(): void {
-    this.context = this.canvas.nativeElement.getContext('2d')!;
-  }
+    // get the context
+    const canvasEl: HTMLCanvasElement = this.canvas.nativeElement;
+    this.context = canvasEl.getContext('2d')!;
 
-  constructor() {
+    // set the width and height
+    canvasEl.width = this.width;
+    canvasEl.height = this.height;
+
+    // set some default properties about the line
+    this.context.lineWidth = 3;
     this.context.lineCap = 'round';
     this.context.lineJoin = 'round';
-    this.context.strokeStyle = 'black';
-    this.context.lineWidth = 1;
-
-    this.redraw();
-  }
-
-  private redraw() {
-    let clickX = this.clickX;
-    let context = this.context;
-    let clickDrag = this.clickDrag;
-    let clickY = this.clickY;
-    this.context.lineWidth = 1;
-
-    for (let i = 0; i < clickX.length; ++i) {
-      context.beginPath();
-      if (clickDrag[i] && i) {
-        context.moveTo(clickX[i - 1], clickY[i - 1]);
-      } else {
-        context.moveTo(clickX[i] - 1, clickY[i]);
-      }
-
-      context.lineTo(clickX[i], clickY[i]);
-      context.stroke();
-    }
-  }
-
-  private addClick(x: number, y: number, dragging: boolean) {
-    this.clickX.push(x);
-    this.clickY.push(y);
-    this.clickDrag.push(dragging);
+    this.context.strokeStyle = "rgba(0, 0, 0, 1)";
+    this.context.fillStyle = "rgba(255, 255, 255, 1)";
   }
 
   public clearCanvas() {
-    this.context
-      .clearRect(0, 0, this.canvas.nativeElement.width, this.canvas.nativeElement.height);
-    this.clickX = [];
-    this.clickY = [];
-    this.clickDrag = [];
+    this.context.clearRect(0, 0, this.canvas.nativeElement.width, this.canvas.nativeElement.height);
   }
 
   public releaseEventHandler = () => {
-    this.paint = false;
-    this.redraw();
+    this.paint=false;
   }
 
   public cancelEventHandler = () => {
-    this.paint = false;
+    this.paint=false;
   }
 
   public pressEventHandler = (e: MouseEvent | TouchEvent) => {
     let mouseX = (e as MouseEvent).pageX;
     let mouseY = (e as MouseEvent).pageY;
-    console.log("Before:", mouseX, mouseY);
-    mouseX -= this.canvas.nativeElement.offsetLeft;
-    mouseY -= this.canvas.nativeElement.offsetTop;
-    console.log("After:", mouseX, mouseY);
 
+    let offSet = this.canvas.nativeElement.getBoundingClientRect();
+    mouseX -= offSet.left;
+    mouseY -= offSet.top;
+
+    const currentPos = {
+      x: mouseX,
+      y: mouseY
+    };
+    this.prevPos = currentPos;
     this.paint = true;
-    this.addClick(mouseX / 3.8, mouseY / 5.5, false);
-    this.redraw();
+    this.drawOnCanvas(this.prevPos,currentPos);
   }
 
   public dragEventHandler = (e: MouseEvent | TouchEvent) => {
     let mouseX = (e as MouseEvent).pageX;
     let mouseY = (e as MouseEvent).pageY;
-    mouseX -= this.canvas.nativeElement.offsetLeft;
-    mouseY -= this.canvas.nativeElement.offsetTop;
-    //console.log(mouseX,mouseY);
 
-    if (this.paint) {
-      this.addClick(mouseX / 3.8, mouseY / 5.5, true);
-      this.redraw();
+    let offSet = this.canvas.nativeElement.getBoundingClientRect();
+    mouseX -= offSet.left;
+    mouseY -= offSet.top;
+
+    const currentPos = {
+      x: mouseX,
+      y: mouseY
+    };
+
+    if(this.paint){
+      this.drawOnCanvas(this.prevPos,currentPos);
+      this.prevPos = currentPos;
     }
 
     e.preventDefault();
   }
 
-  pickColor(value: string) {
+  public pickColor(value: string) {
     this.context.strokeStyle = value;
+  }
+
+  public pickLineWidth(value: number) {
+    this.context.lineWidth = value;
+  }
+
+  private drawOnCanvas(
+    prevPos: { x: number, y: number },
+    currentPos: { x: number, y: number }
+  )
+  {
+    // in case the context is not set
+    if (!this.context) { return; }
+
+    // start our drawing path
+    this.context.beginPath();
+
+    // we're drawing lines so we need a previous position
+    if (prevPos) {
+
+      //modify so it's in the same place as a cursor, it's ugly but it works on my laptop :)
+      currentPos.x *= this.offSetXMulti;
+      currentPos.y *= this.offSetYMulti;
+
+
+      // sets the start point
+      this.context.moveTo(prevPos.x, prevPos.y); // from
+
+      // draws a line from the start pos until the current position
+      this.context.lineTo(currentPos.x, currentPos.y);
+
+      // strokes the current path with the styles we set earlier
+      this.context.stroke();
+    }
   }
 }
