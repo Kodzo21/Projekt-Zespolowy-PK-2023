@@ -14,10 +14,6 @@ export class CanvasComponent implements AfterViewInit {
   private width: number = 1000;
   private height: number = 1000;
 
-  // tested offset multipliers
-  private offSetXMulti: number = 1.6;
-  private offSetYMulti: number = 1.48;
-
   private context: CanvasRenderingContext2D = {} as CanvasRenderingContext2D;
 
   private prevPos!: {
@@ -40,7 +36,6 @@ export class CanvasComponent implements AfterViewInit {
     this.context.lineCap = 'round';
     this.context.lineJoin = 'round';
     this.context.strokeStyle = "rgba(0, 0, 0, 1)";
-    this.context.fillStyle = "rgba(255, 255, 255, 1)";
   }
 
   public clearCanvas() {
@@ -48,42 +43,25 @@ export class CanvasComponent implements AfterViewInit {
   }
 
   public releaseEventHandler = () => {
-    this.paint=false;
+    this.paint = false;
   }
 
   public cancelEventHandler = () => {
-    this.paint=false;
+    this.paint = false;
   }
 
   public pressEventHandler = (e: MouseEvent | TouchEvent) => {
-    let mouseX = (e as MouseEvent).pageX;
-    let mouseY = (e as MouseEvent).pageY;
 
-    let offSet = this.canvas.nativeElement.getBoundingClientRect();
-    mouseX -= offSet.left;
-    mouseY -= offSet.top;
+    const currentPos = this.mousePosition(e);
 
-    const currentPos = {
-      x: mouseX,
-      y: mouseY
-    };
     this.prevPos = currentPos;
     this.paint = true;
     this.drawOnCanvas(this.prevPos,currentPos);
   }
 
   public dragEventHandler = (e: MouseEvent | TouchEvent) => {
-    let mouseX = (e as MouseEvent).pageX;
-    let mouseY = (e as MouseEvent).pageY;
 
-    let offSet = this.canvas.nativeElement.getBoundingClientRect();
-    mouseX -= offSet.left;
-    mouseY -= offSet.top;
-
-    const currentPos = {
-      x: mouseX,
-      y: mouseY
-    };
+    const currentPos = this.mousePosition(e);
 
     if(this.paint){
       this.drawOnCanvas(this.prevPos,currentPos);
@@ -97,8 +75,8 @@ export class CanvasComponent implements AfterViewInit {
     this.context.strokeStyle = value;
   }
 
-  public pickLineWidth(value: number) {
-    this.context.lineWidth = value;
+  public pickLineWidth(value: string) {
+    this.context.lineWidth = +value;
   }
 
   private drawOnCanvas(
@@ -115,11 +93,6 @@ export class CanvasComponent implements AfterViewInit {
     // we're drawing lines so we need a previous position
     if (prevPos) {
 
-      //modify so it's in the same place as a cursor, it's ugly but it works on my laptop :)
-      currentPos.x *= this.offSetXMulti;
-      currentPos.y *= this.offSetYMulti;
-
-
       // sets the start point
       this.context.moveTo(prevPos.x, prevPos.y); // from
 
@@ -129,5 +102,19 @@ export class CanvasComponent implements AfterViewInit {
       // strokes the current path with the styles we set earlier
       this.context.stroke();
     }
+  }
+
+  private mousePosition = (e: MouseEvent | TouchEvent) =>{
+    let mouseX = (e as MouseEvent).clientX;
+    let mouseY = (e as MouseEvent).clientY;
+
+    let offSet = this.canvas.nativeElement.getBoundingClientRect();
+    mouseX = (mouseX - offSet.left)/(offSet.right - offSet.left) * this.width;
+    mouseY = (mouseY - offSet.top)/(offSet.bottom - offSet.top) * this.height;
+
+    return {
+      x: mouseX,
+      y: mouseY
+    };
   }
 }

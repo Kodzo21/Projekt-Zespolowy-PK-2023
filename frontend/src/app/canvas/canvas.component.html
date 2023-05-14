@@ -3,9 +3,7 @@
     <div class="color-picker-container">
       <app-color-picker (colorEvent)="pickColor($event)" />
       <button (click)="clearCanvas()">CLEAR!</button>
-    </div>
-    <div class="line-width-picker-container">
-
+      <app-line-width-picker (widthEvent)="pickLineWidth($event)" />
     </div>
 
     <div class="board-container">
