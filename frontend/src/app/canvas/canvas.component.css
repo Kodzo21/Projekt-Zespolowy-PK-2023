@@ -1,0 +1,31 @@
+.container {
+  height: 100vh;
+  width: 100vw;
+  background-color: rgb(255, 255, 255, 0);
+}
+
+.color-picker-container {
+  text-align: center;
+  margin: auto auto;
+  height: 5vh;
+  width: 5vw;
+}
+
+.color-picker {
+  align-self: center;
+  height: 100%;
+  width: 100%;
+}
+
+.board-container {
+  width: 85%;
+  height: 85%;
+  margin: 1% auto;
+  border: 1px solid black;
+}
+
+.board {
+  height: 100%;
+  width: 100%;
+  background-color: rgba(224, 9, 9, 0);
+}
