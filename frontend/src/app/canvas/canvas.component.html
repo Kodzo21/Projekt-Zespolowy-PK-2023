@@ -1,0 +1,22 @@
+<section class="vh-100 vw-100">
+  <div class="container">
+    <div class="color-picker-container">
+      <app-color-picker (colorEvent)="pickColor($event)" />
+      <button (click)="clearCanvas()">CLEAR!</button>
+      <app-line-width-picker (widthEvent)="pickLineWidth($event)" />
+    </div>
+
+    <div class="board-container">
+      <canvas class="board" id="board" #board
+              (mousedown)="pressEventHandler($event)"
+              (mouseup)="releaseEventHandler()"
+              (mousemove)="dragEventHandler($event)"
+              (mouseout)="cancelEventHandler()"
+              (touchstart)="pressEventHandler($event)"
+              (touchend)="releaseEventHandler()"
+              (touchmove)="dragEventHandler($event)"
+              (touchcancel)="cancelEventHandler()"
+      ></canvas>
+    </div>
+  </div>
+</section>

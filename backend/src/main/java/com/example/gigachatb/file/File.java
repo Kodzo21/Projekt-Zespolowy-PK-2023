@@ -51,7 +51,7 @@ public class File {
     @JoinColumn(name = "conversation_id", referencedColumnName = "conversation_id", nullable = false,insertable = false,updatable = false)
     private Conversation conversationByConversationId;
     @ManyToOne
-    @JoinColumn(name = "message_id", referencedColumnName = "message_id",insertable = false,updatable = false)
+    @JoinColumn(name = "message_id", referencedColumnName = "message_id", insertable = false, updatable = false)
     private Message messageByMessageId;
 
     @Override

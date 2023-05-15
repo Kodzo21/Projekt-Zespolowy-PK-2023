@@ -27,8 +27,10 @@ public class Conversation {
     @Column(name = "start_time")
     private Timestamp startTime;
     @OneToMany(mappedBy = "conversationByConversationId")
+    @Column(insertable = false,updatable = false)
     private Collection<File> filesByConversationId;
     @OneToMany(mappedBy = "conversationByConversationId")
+    @Column(insertable = false,updatable = false)
     private Collection<Message> messagesByConversationId;
     @OneToMany(mappedBy = "conversationByConversationId")
     private Collection<Participant> participantsByConversationId;
