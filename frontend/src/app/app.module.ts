@@ -11,6 +11,7 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { CanvasComponent } from './canvas/canvas.component';
 import { ColorPickerComponent } from './canvas/color-picker/color-picker.component';
 import { LineWidthPickerComponent } from './canvas/line-width-picker/line-width-picker.component';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 @NgModule({
   declarations: [
@@ -25,7 +26,8 @@ import { LineWidthPickerComponent } from './canvas/line-width-picker/line-width-
     AppRoutingModule,
     FormsModule,
     HttpClientModule,
-    NgbModule
+    NgbModule,
+    BrowserAnimationsModule
   ],
   providers: [UserService],
   bootstrap: [AppComponent]
