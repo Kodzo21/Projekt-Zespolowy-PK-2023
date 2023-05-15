@@ -45,13 +45,13 @@ public class File {
     @Column(name = "message_id")
     private Integer messageId;
     @ManyToOne
-    @JoinColumn(name = "user_uploading_id", referencedColumnName = "user_id", nullable = false)
+    @JoinColumn(name = "user_uploading_id", referencedColumnName = "user_id", nullable = false,insertable = false,updatable = false)
     private User userByUserUploadingId;
     @ManyToOne
-    @JoinColumn(name = "conversation_id", referencedColumnName = "conversation_id", nullable = false)
+    @JoinColumn(name = "conversation_id", referencedColumnName = "conversation_id", nullable = false,insertable = false,updatable = false)
     private Conversation conversationByConversationId;
     @ManyToOne
-    @JoinColumn(name = "message_id", referencedColumnName = "message_id")
+    @JoinColumn(name = "message_id", referencedColumnName = "message_id",insertable = false,updatable = false)
     private Message messageByMessageId;
 
     @Override

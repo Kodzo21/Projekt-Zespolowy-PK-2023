@@ -15,6 +15,7 @@ import java.util.Objects;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
+@Table(name = "_group", schema = "public", catalog = "")
 public class Group {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id

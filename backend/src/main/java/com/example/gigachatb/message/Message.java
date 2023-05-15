@@ -36,12 +36,13 @@ public class Message {
     @Column(name = "send_time")
     private Timestamp sendTime;
     @OneToMany(mappedBy = "messageByMessageId")
+    @Column(updatable = false,insertable = false)
     private Collection<File> filesByMessageId;
     @ManyToOne
-    @JoinColumn(name = "conversation_id", referencedColumnName = "conversation_id", nullable = false)
+    @JoinColumn(name = "conversation_id", referencedColumnName = "conversation_id", nullable = false,insertable = false,updatable = false)
     private Conversation conversationByConversationId;
     @ManyToOne
-    @JoinColumn(name = "user_sending_id", referencedColumnName = "user_id", nullable = false)
+    @JoinColumn(name = "user_sending_id", referencedColumnName = "user_id", nullable = false,insertable = false,updatable = false)
     private User userByUserSendingId;
 
     @Override
