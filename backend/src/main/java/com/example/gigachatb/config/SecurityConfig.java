@@ -32,7 +32,7 @@ public class SecurityConfig {
                 .disable()
                 .headers(headers-> headers.frameOptions().disable())
                 .authorizeHttpRequests()
-                .requestMatchers("/api/v1/auth/**","/ws","/ws/**","/topic/**","/app/**")
+                .requestMatchers("/api/v1/auth/**","/ws/**","/ws")
                 .permitAll()
                 .anyRequest()
                 .authenticated()

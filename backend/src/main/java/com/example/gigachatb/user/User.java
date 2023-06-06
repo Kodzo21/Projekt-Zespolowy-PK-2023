@@ -3,11 +3,16 @@ package com.example.gigachatb.user;
 import com.example.gigachatb.conversation.Conversation;
 import com.example.gigachatb.file.File;
 import com.example.gigachatb.message.Message;
+import com.example.gigachatb.security.token.Token;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.DialectOverride;
+import org.hibernate.annotations.Generated;
+import org.hibernate.annotations.GenerationTime;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -41,7 +46,8 @@ public class User implements UserDetails {
     private String lastname;
 
     @Basic
-    @Column
+    @Generated(GenerationTime.INSERT)
+    @Column(name = "unique_id", unique = true,columnDefinition = "varchar(255) default '#'::text || lpad(((nextval('user_user_id_seq'::regclass))::character varying)::text, 5, '0'::text)")
     private String uniqueID;
 
     @OneToMany(mappedBy = "userByUserUploadingId")
@@ -53,7 +59,8 @@ public class User implements UserDetails {
     @ManyToMany(mappedBy = "users")
     private List<Conversation> conversationsByUserId;
 
-
+    @OneToMany(mappedBy = "user")
+    private List<Token> tokens;
 
     @Override
     public boolean equals(Object o) {

@@ -25,7 +25,7 @@ public class MessageController {
     @MessageMapping("/hello")
     public void sendMessage(MessageDTO messageDTO) {
         messageService.saveMessage(messageDTO);
-        var userList = conversationService.getUsersUniqueID(messageDTO.getConversation());
+        var userList = conversationService.getUsersUniqueID(messageDTO);
         //TODO: set id as websocket session
         try {
             for (String id : userList) {

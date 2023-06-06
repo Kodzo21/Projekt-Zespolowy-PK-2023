@@ -1,7 +1,9 @@
 package com.example.gigachatb.conversation;
 
 
+import com.example.gigachatb.message.MessageDTO;
 import com.example.gigachatb.user.User;
+import com.example.gigachatb.user.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -13,9 +15,16 @@ import java.util.stream.Collectors;
 public class ConversationService {
 
     private final ConversationRepository conversationRepository;
+    private final UserService userService;
 
-    public List<String> getUsersUniqueID(int conversationId) {
-        var conversation = conversationRepository.findByConversationId(conversationId).orElseThrow();
+    public List<String> getUsersUniqueID(MessageDTO messageDTO) {
+        var conversation = conversationRepository.findByConversationId(messageDTO.getConversation()).orElse(
+                Conversation.builder()
+                        .users(List.of(userService.getUserByUniqueID(messageDTO.getSender()),
+                                userService.getUserByUniqueID(messageDTO.getReceiver())))
+                        .build()
+
+        );
 
         var userlist = conversation.getUsers();
 
