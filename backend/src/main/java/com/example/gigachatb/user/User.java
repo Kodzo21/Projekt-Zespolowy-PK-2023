@@ -39,13 +39,19 @@ public class User implements UserDetails {
     @Basic
     @Column(name = "lastname")
     private String lastname;
-    @OneToMany(mappedBy = "userByUserId")
-    private Collection<Conversation> conversationsByUserId;
+
+    @Basic
+    @Column
+    private String uniqueID;
+
     @OneToMany(mappedBy = "userByUserUploadingId")
     private Collection<File> filesByUserId;
 
     @OneToMany(mappedBy = "userByUserSendingId")
     private Collection<Message> messagesByUserId;
+
+    @ManyToMany(mappedBy = "users")
+    private List<Conversation> conversationsByUserId;
 
 
 
@@ -54,12 +60,12 @@ public class User implements UserDetails {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         User user = (User) o;
-        return userId == user.userId && Objects.equals(email, user.email) && Objects.equals(password, user.password) && Objects.equals(firstname, user.firstname) && Objects.equals(lastname, user.lastname);
+        return userId == user.userId && Objects.equals(email, user.email) && Objects.equals(password, user.password) && Objects.equals(firstname, user.firstname) && Objects.equals(lastname, user.lastname) && Objects.equals(uniqueID, user.uniqueID);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(userId, email, password, firstname, lastname);
+        return Objects.hash(userId, email, password, firstname, lastname,uniqueID);
     }
 
 
