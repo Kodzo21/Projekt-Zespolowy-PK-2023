@@ -15,11 +15,15 @@ public class TokenService {
         tokenRepository.save(token);
     }
 
-    public List<Token> getValidTokensByUser(int id) {
+    public Optional<Token> getToken(String token) {
+        return tokenRepository.findByToken(token);
+    }
+
+    public List<Token> getAllValidTokenByUser(Integer id) {
         return tokenRepository.findAllValidTokenByUser(id);
     }
 
-    public Optional<Token> getToken(String token) {
-        return tokenRepository.findByToken(token);
+    public void saveAllTokens(List<Token> tokens) {
+        tokenRepository.saveAll(tokens);
     }
 }
