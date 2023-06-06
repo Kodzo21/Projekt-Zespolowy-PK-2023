@@ -18,6 +18,7 @@ import java.util.Objects;
 @NoArgsConstructor
 @Builder
 @Entity
+@Table(name = "_message", schema = "public", catalog = "")
 public class Message {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
