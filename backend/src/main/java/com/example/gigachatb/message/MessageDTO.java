@@ -9,8 +9,9 @@ import java.sql.Timestamp;
 @Data
 @Builder
 public class MessageDTO {
-    int conversationId;
-    int userSendingId;
+    int conversation;
+    String sender;
+    String receiver;
     String text;
     Timestamp sendTime;
 }

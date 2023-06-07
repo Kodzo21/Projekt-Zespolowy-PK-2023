@@ -21,6 +21,13 @@ export class RegisterComponent {
   }
 
   onSubmit() {
-    this.userService.save(this.user).subscribe(response => console.log(response));
+    this.userService.save(this.user).subscribe(response =>{
+      
+      console.log(response);
+      localStorage.setItem('token',response.token );
+      localStorage.setItem('refreshToken',response.refreshToken );
+      localStorage.setItem('uniqueId',response.uniqueId );
+      this.router.navigate(['/chat']);
+    });
   }
 }
