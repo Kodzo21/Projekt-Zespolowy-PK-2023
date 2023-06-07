@@ -1,0 +1,11 @@
+<div>
+  <h2>WebSocket Messages</h2>
+  <ul>
+    <li *ngFor="let message of messages">{{ message.text }}</li>
+  </ul>
+
+  <div>
+    <input type="text" [(ngModel)]="newMessage">
+    <button (click)="sendMessage(newMessage)">Send</button>
+  </div>
+</div>
