@@ -11,6 +11,8 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
 
+import java.security.Principal;
+
 @Controller
 @CrossOrigin(origins = "http://localhost:4200")
 @RequiredArgsConstructor
@@ -24,12 +26,13 @@ public class MessageController {
     @SendTo("/topic/messages")
     @MessageMapping("/hello")
     public void sendMessage(MessageDTO messageDTO) {
-        messageService.saveMessage(messageDTO);
         var userList = conversationService.getUsersUniqueID(messageDTO);
+        messageService.saveMessage(messageDTO);
         //TODO: set id as websocket session
         try {
             for (String id : userList) {
-                simpMessagingTemplate.convertAndSendToUser(id, "/queue/messages", messageDTO);
+                log.info("Sending message to user: " + id);
+                simpMessagingTemplate.convertAndSend( "/topic/messages/"+id, messageDTO);
             }
         }catch (MessagingException e){
             log.error("Error sending message to user/s: " + e.getMessage());

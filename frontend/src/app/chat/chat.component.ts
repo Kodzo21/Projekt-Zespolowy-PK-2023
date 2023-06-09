@@ -1,36 +1,53 @@
-import { Component } from '@angular/core';
+import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
 import { Router } from "@angular/router";
 import {MatDialog} from "@angular/material/dialog";
 import {SettingsComponent} from "../settings/settings.component";
 import {AddUserComponent} from "../add-user/add-user.component";
 import {CreateGroupComponent} from "../create-group/create-group.component";
+import {Message} from "../_models/message";
+import {WebsocketService} from "../_services/websocket.service";
+import {ChatUser} from "../_models/ChatUser";
+import {AuthService} from "../_services/auth.service";
+import {UserService} from "../_services/user.service";
+import {ChangeDetection} from "@angular/cli/lib/config/workspace-schema";
+import {map, Observable, of} from "rxjs";
 
 @Component({
   selector: 'app-chat',
   templateUrl: './chat.component.html',
   styleUrls: ['./chat.component.css']
 })
-export class ChatComponent {
-  users = [
-    { name: 'User 1' },
-    { name: 'User 2' },
-    { name: 'User 3' }
-  ];
+export class ChatComponent implements OnInit{
+
+
+  userList: ChatUser[] = [];
 
   filteredUsers: any[] = [];
-
-  messages = [
-    { sender: 'User 1', text: 'Hello!' },
-    { sender: 'User 2', text: 'Hi there!' }
-  ];
 
   currentUser: string = '';
   newMessage: string = '';
 
-  constructor(private router: Router,private dialog: MatDialog) {}
+  messMap : Observable<Map<string,Message[]>> = of(new Map<string,Message[]>());
+  messagesMap: Map<string,Message[]> = new Map<string,Message[]>();
+  constructor(private router: Router,private dialog: MatDialog,
+              private webSocketService:WebsocketService,
+              private userService: UserService,
+              private changeDetectorRef: ChangeDetectorRef
+              ) {}
 
   ngOnInit() {
-    this.filteredUsers = this.users;
+    this.filteredUsers = this.userList;
+    //todo: u siebie rob jak u siebie
+    this.messMap= this.webSocketService.messages;
+    this.messMap.subscribe(
+      map => {
+        this.messagesMap = map;
+        this.changeDetectorRef.detectChanges();
+      }
+    )
+    this.userService.getUsers().subscribe(response =>{
+      this.userList = response;
+    });
   }
 
   logout() {
@@ -42,14 +59,29 @@ export class ChatComponent {
   }
 
   selectUser(user: any) {
-    this.currentUser = user.name;
+    this.currentUser = user.id;
   }
 
   sendMessage() {
-    if (this.newMessage) {
-      this.messages.push({ sender: this.currentUser, text: this.newMessage });
-      this.newMessage = '';
+    // if (this.newMessage) {
+    //   this.messages.push({ sender: this.currentUser, text: this.newMessage });
+    //   this.newMessage = '';
+    // }
+    let mess:Message = {
+      sender: localStorage.getItem('id')!,
+      text: this.newMessage,
+      receiver : this.currentUser,
+      date: new Date(),
+      conversation: null
     }
+    this.webSocketService.sendMessage(mess);
+    this.messMap.subscribe(map => {
+      if (map.has(mess.receiver)){
+        map.get(mess.receiver)?.push(mess);
+      }else {
+        map.set(mess.receiver,[mess]);
+      }
+    });
   }
 
   openToSettings(){
@@ -69,11 +101,11 @@ export class ChatComponent {
 
   searchUsers() {
     if (this.currentUser) {
-      this.filteredUsers = this.users.filter(user =>
+      this.filteredUsers = this.userList.filter(user =>
         user.name.toLowerCase().includes(this.currentUser.toLowerCase())
       );
     } else {
-      this.filteredUsers = this.users;
+      this.filteredUsers = this.userList;
     }
   }
 
@@ -84,4 +116,6 @@ export class ChatComponent {
       data: {} // Możesz przekazać dane do dialogu, jeśli jest to potrzebne
     });
   }
+
+  protected readonly map = map;
 }

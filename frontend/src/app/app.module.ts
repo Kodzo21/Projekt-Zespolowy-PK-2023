@@ -5,8 +5,8 @@ import { AppComponent } from './app.component';
 import {AuthModule} from "./auth/auth.module";
 import {AppRoutingModule} from "./app-routing.module";
 import {FormsModule} from "@angular/forms";
-import {HttpClientModule} from "@angular/common/http";
-import {UserService} from "./_services/user.service";
+import {HTTP_INTERCEPTORS, HttpClientModule} from "@angular/common/http";
+import {AuthService} from "./_services/auth.service";
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { CanvasComponent } from './canvas/canvas.component';
 import { ColorPickerComponent } from './canvas/color-picker/color-picker.component';
@@ -22,6 +22,7 @@ import {MatButtonModule} from "@angular/material/button";
 import { AddUserComponent } from './add-user/add-user.component';
 import { CreateGroupComponent } from './create-group/create-group.component';
 import {MatCheckboxModule} from "@angular/material/checkbox";
+import {AuthInterceptor} from "./interceptors/auth.interceptor";
 
 @NgModule({
   declarations: [
@@ -48,7 +49,12 @@ import {MatCheckboxModule} from "@angular/material/checkbox";
     MatButtonModule,
     MatCheckboxModule,
   ],
-  providers: [UserService],
+  providers: [AuthService, {provide:
+
+  HTTP_INTERCEPTORS,
+  useClass: AuthInterceptor,
+  multi: true
+}],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

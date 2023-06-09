@@ -25,9 +25,25 @@ public class ConversationService {
                         .build()
 
         );
-
+        conversationRepository.save(conversation);
+        messageDTO.setConversation(conversation.getConversationId());
         var userlist = conversation.getUsers();
 
         return userlist.stream().map(User::getUniqueID).collect(Collectors.toList());
+    }
+
+    public List<String> getUsersMails(MessageDTO messageDTO) {
+        var conversation = conversationRepository.findByConversationId(messageDTO.getConversation()).orElse(
+                Conversation.builder()
+                        .users(List.of(userService.getUserByUniqueID(messageDTO.getSender()),
+                                userService.getUserByUniqueID(messageDTO.getReceiver())))
+                        .build()
+
+        );
+        conversationRepository.save(conversation);
+        messageDTO.setConversation(conversation.getConversationId());
+        var userlist = conversation.getUsers();
+
+        return userlist.stream().map(User::getEmail).collect(Collectors.toList());
     }
 }

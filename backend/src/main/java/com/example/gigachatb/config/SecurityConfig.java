@@ -35,7 +35,7 @@ public class SecurityConfig {
                 .requestMatchers("/api/v1/auth/**","/ws/**","/ws")
                 .permitAll()
                 .anyRequest()
-                .permitAll()        //.authenticated() - wymaganie tokenu na backu #todo
+                .authenticated()      //.authenticated() - wymaganie tokenu na backu #todo
                 .and()
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
