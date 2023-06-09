@@ -1,0 +1,173 @@
+.chat-container {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.top-bar {
+  display: flex;
+  flex-direction: row-reverse;
+  align-items: center;
+  padding: 10px;
+  background-color: #f5f5dc;
+}
+.canvas-button{
+  border-radius: 0.5em;
+  display: flex;
+}
+
+
+.settings-button{
+  display:flex;
+  padding: 5px 10px;
+  background: rgba(255,255,255,0);
+  color: black;
+  border: none;
+  cursor: pointer;
+}
+
+.add-user-button{
+  display:flex;
+  padding: 5px 10px;
+  background: rgba(255,255,255,0);
+  color: black;
+  border: none;
+  cursor: pointer;
+}
+
+.logout-button {
+  border-radius: 0.5em;
+  display:flex;
+  padding: 5px 10px;
+  background-color: #e53935;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+
+.user-options-bar {
+  position: absolute;
+  bottom:0;
+  display: flex;
+  justify-content: space-between;
+  padding: 10px;
+  width:100%;
+  background-color: #f5f5dc;
+}
+
+.message-container {
+  flex: 1;
+  display: flex;
+  overflow: hidden;
+}
+
+.user-list {
+  position: relative;
+  flex: 1;
+  overflow-y: auto;
+  background-color: #fafafa;
+}
+
+.user-list ul{
+  list-style-type: none;
+  padding: 1em;
+}
+
+.user-list li{
+  padding:0.5em;
+  font-size:20px;
+}
+
+.message-window {
+  flex: 3;
+  display: flex;
+  flex-direction: column;
+  border-left: 1px solid #ccc;
+}
+
+.messages {
+
+  flex: 1;
+  overflow-y: auto;
+  padding: 10px;
+}
+
+.message {
+  display:grid;
+  border-radius: 2em;
+  border:solid black 1px;
+  margin-bottom: 10px;
+}
+
+.my-message {
+
+  display:grid;
+  justify-content: end;
+  background-color: #e3f2fd;
+}
+
+.message-input {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  background-color: #f5f5f5;
+}
+
+.message-input input {
+  flex: 1;
+  padding: 5px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  height: 7em;
+}
+
+.message-input button {
+  margin-left: 10px;
+  padding: 5px 10px;
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  cursor: pointer;
+  height: 100%;
+  border-radius: 1em;
+  width: 20%;
+}
+
+span{
+  margin:0 1em 0 1em;
+  padding:0.5em;
+}
+
+p{
+  margin: 0 1em 0 1em;
+  padding: 0.5em;
+}
+
+.search-user{
+  padding:1em 0.7em;
+
+}
+
+.search-user input{
+  border-radius: 1em;
+  width: 100%;
+  padding: 10px;
+}
+.search-user {
+  position: relative;
+}
+
+.search-icon {
+  position: relative;
+  top: 50%;
+  left: 8px;
+  transform: translateY(-50%);
+  color: gray;
+}
+
+.mat-mdc-form-field{
+  display:grid;
+  width: 100%;
+
+}
