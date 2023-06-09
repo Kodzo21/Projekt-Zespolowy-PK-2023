@@ -1,28 +1,17 @@
 import { Injectable } from '@angular/core';
-import {HttpBackend, HttpClient, HttpHeaders} from "@angular/common/http";
-import {User} from "../_models/user";
-import {AuthResponse} from "../_models/AuthResponse";
-import {shareReplay} from "rxjs";
+import {HttpClient, HttpHeaders} from "@angular/common/http";
+import {ChatUser} from "../_models/ChatUser";
 
 @Injectable({
   providedIn: 'root'
 })
 export class UserService {
 
-  private readonly url:string;
-  private http: HttpClient;
+  readonly url:string = "http://localhost:8080/api/v1/users";
+  constructor(private httpClient: HttpClient) { }
 
-  constructor(private handler: HttpBackend) {
-    this.http = new HttpClient(handler);
-    this.url = "http://localhost:8080/api/v1/auth"
-  }
-
-  public save(user: User) {
+  getUsers() {
     const headers = new HttpHeaders().set('Content-Type','application/json');
-    return this.http.post<AuthResponse>(this.url+"/register",user,{headers})
-      .pipe(
-        shareReplay(),
-      );
+    return this.httpClient.get<ChatUser[]>(this.url+"/all",{headers});
   }
-
 }

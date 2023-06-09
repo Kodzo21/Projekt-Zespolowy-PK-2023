@@ -14,4 +14,6 @@ public class AuthenticationResponse {
 
     private String refreshToken;
 
+    private String uniqueId;
+
 }

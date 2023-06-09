@@ -1,9 +1,12 @@
 package com.example.gigachatb.user;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.http.server.ServerHttpRequest;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -38,5 +41,11 @@ public class UserService {
 
     public User getUserByUniqueID(String uniqueID) {
         return userRepository.findByUniqueID(uniqueID).orElseThrow( () -> new UsernameNotFoundException("User not found"));
+    }
+
+    public List<UserResponse> getAllUsers() {
+        var users =  userRepository.findAll();
+        UserMapper userMapper = new UserMapper();
+        return userMapper.mapUsers(users);
     }
 }

@@ -7,8 +7,8 @@
         <input matInput type="text" placeholder="Search users">
       </mat-form-field>
       <ul>
-        <li *ngFor="let user of users" (click)="selectUser(user)">
-          {{ user.name }}
+        <li *ngFor="let user of userList" (click)="selectUser(user)">
+          {{ user.name }} / {{ user.id }}
         </li>
       </ul>
       <div class="user-options-bar">
@@ -24,7 +24,7 @@
         <button class="canvas-button" (click)="goToCanvas()"><mat-icon>mode_edit</mat-icon></button>
       </div>
       <div class="messages">
-        <div *ngFor="let message of messages" class="message" [ngClass]="{'my-message': message.sender === currentUser}">
+        <div *ngFor="let message of messagesMap.get(currentUser) " class="message" [ngClass]="{'my-message': message.sender === currentUser}">
           <span>{{ message.sender }}:</span>
           <p>{{ message.text }}</p>
         </div>

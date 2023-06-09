@@ -52,6 +52,7 @@ public class AuthenticationService {
                 )
                 .token(token)
                 .refreshToken(refreshToken)
+                .uniqueId(user.getUniqueID())
                 .build();
     }
 
@@ -62,10 +63,13 @@ public class AuthenticationService {
         );
         var user = userService.getUserByEmail(request.getEmail());
         var token = jwtService.generateToken(user);
+        var refreshToken = jwtService.generateRefreshToken(user);
         revokeTokens(user);
         saveUserToken(user,token);
         return AuthenticationResponse.builder()
                 .token(token)
+                .uniqueId(user.getUniqueID())
+                .refreshToken(refreshToken)
                 .build();
     }
 
