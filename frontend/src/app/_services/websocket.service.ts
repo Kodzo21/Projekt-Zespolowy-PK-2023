@@ -2,7 +2,8 @@ import {Injectable} from '@angular/core';
 import {Client} from "@stomp/stompjs";
 import * as SockJS from 'sockjs-client';
 import {Message} from "../_models/message";
-
+//#todo chujowyh subcsribe topic messages trzeba zamiienic tak jak jest w message controller na backu
+//#todo rozkminic jak to sie ma laczyc z prywatnym socketem a nie brocastowym
 @Injectable({
   providedIn: 'root'
 })

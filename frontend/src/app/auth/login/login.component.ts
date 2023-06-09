@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-
+import {ActivatedRoute, Router} from "@angular/router";
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
@@ -7,4 +7,12 @@ import { Component } from '@angular/core';
 })
 export class LoginComponent {
 
+
+  constructor(
+    private route: ActivatedRoute,
+    private router: Router
+  ){}
+  onSubmit() {
+      this.router.navigate(['/chat']);
+  }
 }

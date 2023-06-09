@@ -1,0 +1,26 @@
+form{
+  display:grid;
+  justify-content: center;
+}
+
+h2{
+  display: flex;
+  justify-content: center;
+  padding-top:22px;
+}
+
+button:hover {
+  background-color: #45a049;
+}
+ul{
+  list-style-type: none;
+}
+
+
+.mat-mdc-text-field-wrapper mdc-text-field ng-tns-c13-1 mdc-text-field--filled mdc-text-field--no-label{
+  width: 90%;
+}
+
+.custom-checkbox .mat-checkbox-checkmark-path {
+  stroke: #ffffff; /* Ustawienie koloru znacznika */
+}
