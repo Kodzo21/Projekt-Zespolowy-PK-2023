@@ -26,6 +26,8 @@ export class CanvasComponent implements AfterViewInit {
 
   public backgroundURL: string = "/assets/images/No_image.svg";
 
+  private data: string ="";
+
   ngAfterViewInit(): void {
     // get the context
     const canvasEl: HTMLCanvasElement = this.canvas.nativeElement;
@@ -183,11 +185,27 @@ export class CanvasComponent implements AfterViewInit {
     if(files && files.item(0)){
       url = window.URL.createObjectURL(files[0]);
       this.backgroundURL = url;
-      console.log(url);
     }
   }
 
-  clearBackground() {
+  public clearBackground() {
     this.backgroundURL = "/assets/images/No_image.svg";
+  }
+
+  public saveData(){
+    this.data = this.canvas.nativeElement.toDataURL("image/png",1.0);
+    console.log(this.data);
+  }
+
+  public loadData(){
+
+    const image = new Image();
+    const ctx = this.context;
+
+    image.onload = function (){
+      ctx.drawImage(image,0,0);
+    }
+
+    image.src = this.data;
   }
 }
