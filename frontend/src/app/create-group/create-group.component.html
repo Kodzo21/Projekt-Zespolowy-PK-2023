@@ -1,0 +1,16 @@
+<h2>Utwórz grupe</h2>
+<form>
+  <mat-form-field>
+    <input matInput placeholder="Group name">
+  </mat-form-field>
+  <div class="user-list">
+    <ul>
+      <li *ngFor="let user of users" [class.selected]="user.selected" (click)="toggleUserSelection(user)">
+        <mat-checkbox
+          [(ngModel)]="user.selected" color="primary" [ngModelOptions]="{ standalone: true }"></mat-checkbox>
+        {{ user.name }}
+      </li>
+    </ul>
+  </div>
+  <button mat-raised-button color="primary" (click)="createGroup()">Create group</button>
+</form>

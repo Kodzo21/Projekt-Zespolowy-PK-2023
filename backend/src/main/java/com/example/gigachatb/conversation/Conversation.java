@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 
 import java.sql.Timestamp;
 import java.util.Collection;
+import java.util.List;
 import java.util.Objects;
 
 @Data
@@ -24,14 +25,9 @@ public class Conversation {
     @Column(name = "conversation_id")
     private int conversationId;
     @Basic
-    @Column(name = "user_id")
-    private int userId;
-    @Basic
     @Column(name = "start_time")
     private Timestamp startTime;
-    @ManyToOne
-    @JoinColumn(name = "user_id", referencedColumnName = "user_id", nullable = false,insertable = false,updatable = false)
-    private User userByUserId;
+
     @OneToMany(mappedBy = "conversationByConversationId")
     @Column(insertable = false,updatable = false)
     private Collection<File> filesByConversationId;
@@ -39,18 +35,24 @@ public class Conversation {
     @Column(insertable = false,updatable = false)
     private Collection<Message> messagesByConversationId;
 
+    @ManyToMany
+    @JoinTable(
+            name = "participant",
+            joinColumns = @JoinColumn(name = "conversation_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id"))
+    private List<User> users;
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Conversation that = (Conversation) o;
-        return conversationId == that.conversationId && userId == that.userId && Objects.equals(startTime, that.startTime);
+        return conversationId == that.conversationId  && Objects.equals(startTime, that.startTime);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(conversationId, userId, startTime);
+        return Objects.hash(conversationId,  startTime);
     }
 
 }

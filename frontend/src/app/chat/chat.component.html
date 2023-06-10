@@ -1,0 +1,39 @@
+<section class="chat-container" xmlns="http://www.w3.org/1999/html">
+
+
+  <div class="message-container">
+    <div class="user-list">
+      <mat-form-field class="search-user">
+        <input matInput type="text" placeholder="Search users">
+      </mat-form-field>
+      <ul>
+        <li *ngFor="let user of userList" (click)="selectUser(user)">
+          {{ user.name }} / {{ user.id }}
+        </li>
+      </ul>
+      <div class="user-options-bar">
+        <button class="add-user-button" (click)="openCreateGroup()"><mat-icon>group_add</mat-icon></button>
+        <button class="add-user-button" (click)="openToAddFrined()"><mat-icon>person_add</mat-icon></button>
+        <button class="settings-button" (click)="openToSettings()"> <mat-icon>settings</mat-icon></button>
+        <button class="logout-button" (click)="logout()"><mat-icon>logout</mat-icon></button>
+      </div>
+    </div>
+
+    <div class="message-window">
+      <div class="top-bar">
+        <button class="canvas-button" (click)="goToCanvas()"><mat-icon>mode_edit</mat-icon></button>
+      </div>
+      <div class="messages">
+        <div *ngFor="let message of messagesMap.get(currentUser) " class="message" [ngClass]="{'my-message': message.sender === currentUser}">
+          <span>{{ message.sender }}:</span>
+          <p>{{ message.text }}</p>
+        </div>
+      </div>
+
+      <div class="message-input">
+        <input type="text" [(ngModel)]="newMessage" placeholder="Type your message">
+        <button (click)="sendMessage()">Send</button>
+      </div>
+    </div>
+  </div>
+</section>

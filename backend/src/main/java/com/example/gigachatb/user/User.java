@@ -3,11 +3,16 @@ package com.example.gigachatb.user;
 import com.example.gigachatb.conversation.Conversation;
 import com.example.gigachatb.file.File;
 import com.example.gigachatb.message.Message;
+import com.example.gigachatb.security.token.Token;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.DialectOverride;
+import org.hibernate.annotations.Generated;
+import org.hibernate.annotations.GenerationTime;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -39,27 +44,35 @@ public class User implements UserDetails {
     @Basic
     @Column(name = "lastname")
     private String lastname;
-    @OneToMany(mappedBy = "userByUserId")
-    private Collection<Conversation> conversationsByUserId;
+
+    @Basic
+    @Generated(GenerationTime.INSERT)
+    @Column(name = "unique_id", unique = true,columnDefinition = "varchar(255) default '#'::text || lpad(((nextval('user_user_id_seq'::regclass))::character varying)::text, 5, '0'::text)")
+    private String uniqueID;
+
     @OneToMany(mappedBy = "userByUserUploadingId")
     private Collection<File> filesByUserId;
 
     @OneToMany(mappedBy = "userByUserSendingId")
     private Collection<Message> messagesByUserId;
 
+    @ManyToMany(mappedBy = "users")
+    private List<Conversation> conversationsByUserId;
 
+    @OneToMany(mappedBy = "user")
+    private List<Token> tokens;
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         User user = (User) o;
-        return userId == user.userId && Objects.equals(email, user.email) && Objects.equals(password, user.password) && Objects.equals(firstname, user.firstname) && Objects.equals(lastname, user.lastname);
+        return userId == user.userId && Objects.equals(email, user.email) && Objects.equals(password, user.password) && Objects.equals(firstname, user.firstname) && Objects.equals(lastname, user.lastname) && Objects.equals(uniqueID, user.uniqueID);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(userId, email, password, firstname, lastname);
+        return Objects.hash(userId, email, password, firstname, lastname,uniqueID);
     }
 
 

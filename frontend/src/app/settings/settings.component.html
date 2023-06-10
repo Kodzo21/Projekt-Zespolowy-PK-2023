@@ -1,0 +1,56 @@
+<mat-accordion>
+  <mat-expansion-panel>
+    <mat-expansion-panel-header>
+      <mat-panel-title>
+        Zmień email
+      </mat-panel-title>
+    </mat-expansion-panel-header>
+    <form>
+      <mat-form-field>
+        <input matInput placeholder="Nowy email" [(ngModel)]="newEmail" name="newEmail" required>
+      </mat-form-field>
+      <button mat-raised-button color="primary" (click)="changeEmail()">Zmień email</button>
+    </form>
+  </mat-expansion-panel>
+
+  <mat-expansion-panel>
+    <mat-expansion-panel-header>
+      <mat-panel-title>
+        Zmień hasło
+      </mat-panel-title>
+    </mat-expansion-panel-header>
+    <form>
+      <mat-form-field>
+        <input matInput type="password" placeholder="Stare hasło" [(ngModel)]="currentPassword" name="currentPassword" required>
+      </mat-form-field>
+      <mat-form-field>
+        <input matInput type="password" placeholder="Nowe hasło" [(ngModel)]="newPassword" name="newPassword" required>
+      </mat-form-field>
+      <button mat-raised-button color="primary" (click)="changePassword()">Zmień hasło</button>
+    </form>
+  </mat-expansion-panel>
+
+  <mat-expansion-panel>
+    <mat-expansion-panel-header>
+      <mat-panel-title>
+        Ustaw zdjęcie
+      </mat-panel-title>
+    </mat-expansion-panel-header>
+    <form>
+      <input type="file" (change)="onFileSelected($event)" name="photo" required>
+      <button mat-raised-button color="primary" (click)="uploadPhoto()">Załaduj zdjęcie</button>
+    </form>
+  </mat-expansion-panel>
+
+  <mat-expansion-panel>
+    <mat-expansion-panel-header>
+      <mat-panel-title>
+        Usuń konto
+      </mat-panel-title>
+    </mat-expansion-panel-header>
+    <div>
+      <p>Czy na pewno chcesz usunąć swoje konto? Ta operacja jest nieodwracalna.</p>
+      <button mat-raised-button color="warn" (click)="deleteAccount()">Usuń konto</button>
+    </div>
+  </mat-expansion-panel>
+</mat-accordion>
