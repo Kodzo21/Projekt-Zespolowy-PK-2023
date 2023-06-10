@@ -3,7 +3,7 @@ import {Component, EventEmitter, Output} from '@angular/core';
 @Component({
   selector: 'app-background-picker',
   template: `
-    <input type="file" class="background-picker" accept="image/svg+xml" #file (change)="pickImage($event)">
+    <input type="file" class="background-picker" accept="image/*" #file (change)="pickImage($event)">
   `,
   styles: [
   ]
