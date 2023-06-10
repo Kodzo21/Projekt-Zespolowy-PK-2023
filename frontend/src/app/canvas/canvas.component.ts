@@ -38,9 +38,6 @@ export class CanvasComponent implements AfterViewInit {
     this.context.lineCap = 'round';
     this.context.lineJoin = 'round';
     this.context.strokeStyle = "rgba(0, 0, 0, 1)";
-
-    //set background as image
-    //this.drawImageOnCanvas("https://www.google.com/url?sa=i&url=https%3A%2F%2Fzoo24.pl%2Fblog%2Fkot-brytyjski-n66&psig=AOvVaw1qwsHWYxaFtvIIU79-Da-_&ust=1686262801589000&source=images&cd=vfe&ved=0CBEQjRxqFwoTCPCFnsyYsv8CFQAAAAAdAAAAABAE");
   }
 
   public clearCanvas() {
@@ -50,6 +47,7 @@ export class CanvasComponent implements AfterViewInit {
   }
 
   public releaseEventHandler = (e: MouseEvent | TouchEvent) => {
+
     if(this.drawLine){
       const currentPos = this.mousePosition(e);
       this.drawLineOnCanvas(this.prevPos,currentPos);
@@ -172,17 +170,16 @@ export class CanvasComponent implements AfterViewInit {
     this.drawLine = false;
   }
 
-  private drawImageOnCanvas(imageUrl: string){
+  public pickImage(event: Event) {
+    let files, url;
 
-    let background = new Image();
-    background.src = imageUrl;
+    if(event){
+      files = (event.target as HTMLInputElement).files;
+    }
 
-    let scale = Math.min(this.canvas.nativeElement.width / background.width, this.canvas.nativeElement.height / background.height);
-    let width = background.width * scale;
-    let height = background.height * scale;
-    let x = this.canvas.nativeElement.width / 2 - width / 2;
-    let y = this.canvas.nativeElement.height / 2 - height / 2;
-
-    this.context.drawImage(background, x, y, width, height)
+    if(files && files.item(0)){
+      url = window.URL.createObjectURL(files[0]);
+    }
   }
+
 }

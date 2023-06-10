@@ -1,14 +1,25 @@
 <section class="vh-100 vw-100">
   <div class="container">
-    <div class="color-picker-container">
+    <div class="interaction-container">
       <app-color-picker (colorEvent)="pickColor($event)" />
       <button (click)="clearCanvas()">CLEAR!</button>
       <app-line-width-picker (widthEvent)="pickLineWidth($event)" />
       <button type="button" class="btn btn-success" (click)="changeLineDrawing()">Line</button>
       <button type="button" class="btn btn-success" (click)="changeEraseMode()">Erase</button>
+      <app-background-picker (imageEvent)="pickImage($event)" />
     </div>
 
     <div class="board-container">
+      <img class="canvas-background" id="background" src="/assets/images/logo.svg" alt=""
+           (mousedown)="pressEventHandler($event)"
+           (mouseup)="releaseEventHandler($event)"
+           (mousemove)="dragEventHandler($event)"
+           (mouseout)="cancelEventHandler()"
+           (touchstart)="pressEventHandler($event)"
+           (touchend)="releaseEventHandler($event)"
+           (touchmove)="dragEventHandler($event)"
+           (touchcancel)="cancelEventHandler()"
+      >
       <canvas class="board" id="board" #board
               (mousedown)="pressEventHandler($event)"
               (mouseup)="releaseEventHandler($event)"

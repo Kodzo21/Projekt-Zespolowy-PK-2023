@@ -15,7 +15,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import {ChatComponent} from "./chat/chat.component";
 import {MatIconModule} from "@angular/material/icon";
 import { SettingsComponent } from './settings/settings.component';
-import {MatDialog, MatDialogModule} from "@angular/material/dialog";
+import {MatDialogModule} from "@angular/material/dialog";
 import {MatExpansionModule} from "@angular/material/expansion";
 import {MatInputModule} from "@angular/material/input";
 import {MatButtonModule} from "@angular/material/button";
@@ -23,6 +23,7 @@ import { AddUserComponent } from './add-user/add-user.component';
 import { CreateGroupComponent } from './create-group/create-group.component';
 import {MatCheckboxModule} from "@angular/material/checkbox";
 import {AuthInterceptor} from "./interceptors/auth.interceptor";
+import { BackgroundPickerComponent } from './canvas/background-picker/background-picker.component';
 
 @NgModule({
   declarations: [
@@ -33,6 +34,7 @@ import {AuthInterceptor} from "./interceptors/auth.interceptor";
     SettingsComponent,
     AddUserComponent,
     CreateGroupComponent,
+    BackgroundPickerComponent,
   ],
   imports: [
     MatIconModule,
