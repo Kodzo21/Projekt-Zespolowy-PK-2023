@@ -6,10 +6,7 @@ import com.example.gigachatb.message.Message;
 import com.example.gigachatb.security.token.Token;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.DialectOverride;
 import org.hibernate.annotations.Generated;
 import org.hibernate.annotations.GenerationTime;
@@ -21,7 +18,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 
-@Data
+@Getter
+@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -51,10 +49,10 @@ public class User implements UserDetails {
     private String uniqueID;
 
     @OneToMany(mappedBy = "userByUserUploadingId")
-    private Collection<File> filesByUserId;
+    private List<File> filesByUserId;
 
     @OneToMany(mappedBy = "userByUserSendingId")
-    private Collection<Message> messagesByUserId;
+    private List<Message> messagesByUserId;
 
     @ManyToMany(mappedBy = "users")
     private List<Conversation> conversationsByUserId;

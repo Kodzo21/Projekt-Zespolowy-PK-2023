@@ -77,7 +77,15 @@
 .user-list li{
   padding:0.5em;
   font-size:20px;
+
 }
+
+.user-list li:hover{
+  background-color: #e3f2fd;
+  cursor: pointer;
+}
+
+
 
 .message-window {
   flex: 3;

@@ -4,7 +4,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { AppComponent } from './app.component';
 import {AuthModule} from "./auth/auth.module";
 import {AppRoutingModule} from "./app-routing.module";
-import {FormsModule} from "@angular/forms";
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {HTTP_INTERCEPTORS, HttpClientModule} from "@angular/common/http";
 import {AuthService} from "./_services/auth.service";
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
@@ -23,6 +23,7 @@ import { AddUserComponent } from './add-user/add-user.component';
 import { CreateGroupComponent } from './create-group/create-group.component';
 import {MatCheckboxModule} from "@angular/material/checkbox";
 import {AuthInterceptor} from "./interceptors/auth.interceptor";
+import {MatAutocompleteModule} from "@angular/material/autocomplete";
 
 @NgModule({
   declarations: [
@@ -48,6 +49,8 @@ import {AuthInterceptor} from "./interceptors/auth.interceptor";
     MatInputModule,
     MatButtonModule,
     MatCheckboxModule,
+    ReactiveFormsModule,
+    MatAutocompleteModule,
   ],
   providers: [AuthService, {provide:
 

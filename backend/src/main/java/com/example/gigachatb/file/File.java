@@ -33,25 +33,16 @@ public class File {
     @Column(name = "content")
     private byte[] content;
     @Basic
-    @Column(name = "user_uploading_id")
-    private int userUploadingId;
-    @Basic
     @Column(name = "uploaded_at")
     private Timestamp uploadedAt;
-    @Basic
-    @Column(name = "conversation_id")
-    private int conversationId;
-    @Basic
-    @Column(name = "message_id")
-    private Integer messageId;
     @ManyToOne
-    @JoinColumn(name = "user_uploading_id", referencedColumnName = "user_id", nullable = false,insertable = false,updatable = false)
+    @JoinColumn(name = "user_uploading_id", referencedColumnName = "user_id")
     private User userByUserUploadingId;
     @ManyToOne
-    @JoinColumn(name = "conversation_id", referencedColumnName = "conversation_id", nullable = false,insertable = false,updatable = false)
+    @JoinColumn(name = "conversation_id", referencedColumnName = "conversation_id")
     private Conversation conversationByConversationId;
     @ManyToOne
-    @JoinColumn(name = "message_id", referencedColumnName = "message_id", insertable = false, updatable = false)
+    @JoinColumn(name = "message_id", referencedColumnName = "message_id")
     private Message messageByMessageId;
 
     @Override
@@ -59,12 +50,12 @@ public class File {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         File file = (File) o;
-        return fileId == file.fileId && sizeByte == file.sizeByte && userUploadingId == file.userUploadingId && conversationId == file.conversationId && Objects.equals(filename, file.filename) && Arrays.equals(content, file.content) && Objects.equals(uploadedAt, file.uploadedAt) && Objects.equals(messageId, file.messageId);
+        return fileId == file.fileId && sizeByte == file.sizeByte && Objects.equals(filename, file.filename) && Arrays.equals(content, file.content) && Objects.equals(uploadedAt, file.uploadedAt) ;
     }
 
     @Override
     public int hashCode() {
-        int result = Objects.hash(fileId, filename, sizeByte, userUploadingId, uploadedAt, conversationId, messageId);
+        int result = Objects.hash(fileId, filename, sizeByte, uploadedAt);
         result = 31 * result + Arrays.hashCode(content);
         return result;
     }

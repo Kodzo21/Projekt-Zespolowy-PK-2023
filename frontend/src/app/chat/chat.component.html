@@ -4,11 +4,19 @@
   <div class="message-container">
     <div class="user-list">
       <mat-form-field class="search-user">
-        <input matInput type="text" placeholder="Search users">
+
+        <input matInput type="text" placeholder="Search users" [formControl]="userSearchControl" [matAutocomplete]="auto" >
+        <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selectUser($event.option.value)">
+          <mat-option *ngFor="let user of filteredUsers " [value]="user.name" (click)="selectUser(user)">
+            {{ user.name }} / {{ user.id }}
+          </mat-option>
+        </mat-autocomplete>
       </mat-form-field>
       <ul>
-        <li *ngFor="let user of userList" (click)="selectUser(user)">
-          {{ user.name }} / {{ user.id }}
+        <li *ngFor="let conversation of conversations;let i = index" (click)="selectConversation(conversation.id) " [ngStyle]="{'background-color': currentConversation===conversation.id ? '#e3f2fd' : ' #fafafa'}" >
+          {{ conversation.id
+          // ?user.name:user.users[1].name
+          }} / {{ conversation.id}}
         </li>
       </ul>
       <div class="user-options-bar">
@@ -24,7 +32,7 @@
         <button class="canvas-button" (click)="goToCanvas()"><mat-icon>mode_edit</mat-icon></button>
       </div>
       <div class="messages">
-        <div *ngFor="let message of messagesMap.get(currentUser) " class="message" [ngClass]="{'my-message': message.sender === currentUser}">
+        <div *ngFor="let message of getMessages()" class="message" [ngClass]="{'my-message': message.sender === localStorage.getItem('id')}">
           <span>{{ message.sender }}:</span>
           <p>{{ message.text }}</p>
         </div>
@@ -32,7 +40,7 @@
 
       <div class="message-input">
         <input type="text" [(ngModel)]="newMessage" placeholder="Type your message">
-        <button (click)="sendMessage()">Send</button>
+        <button (click)="sendMessage(currentConversation)">Send</button>
       </div>
     </div>
   </div>
