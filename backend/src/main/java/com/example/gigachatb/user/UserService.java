@@ -1,23 +1,16 @@
 package com.example.gigachatb.user;
-
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
-import org.springframework.http.server.ServerHttpRequest;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class UserService {
-    private final UserRepository   userRepository;
-
-    public User getUserFromRequest(ServerHttpRequest request) {
-        String token = request.getHeaders().get("Authentication").get(0);
-        return userRepository.findByUniqueID(token).orElseThrow();
-    }
-
+    private final UserRepository  userRepository;
+    private final UserMapper userMapper = new UserMapper();
     public void addUser(User user) {
         //check if email is already in use
         if(userRepository.findByEmail(user.getEmail()).isPresent()) {
@@ -45,7 +38,30 @@ public class UserService {
 
     public List<UserResponse> getAllUsers() {
         var users =  userRepository.findAll();
-        UserMapper userMapper = new UserMapper();
         return userMapper.mapUsers(users);
     }
+
+
+
+    public List<UserResponse> searchUsers(String searchTerm) {
+        var users = userRepository.searchUsers(searchTerm);
+        return userMapper.mapUsers(users);
+    }
+
+    public List<User> getUsersByUniqueID(List<String> participants) {
+        var userList = new ArrayList<User>();
+        participants.forEach(
+                participant -> {
+                    if(userRepository.findByUniqueID(participant).isEmpty()) {
+                        throw new IllegalArgumentException("User not found");
+                    }else{
+                        userList.add(userRepository.findByUniqueID(participant).get());
+                    }
+
+                }
+        );
+        return userList;
+    }
+
+
 }

@@ -14,4 +14,9 @@ export class UserService {
     const headers = new HttpHeaders().set('Content-Type','application/json');
     return this.httpClient.get<ChatUser[]>(this.url+"/all",{headers});
   }
+
+  getFilteredUsers(searchTerm: string) {
+    const headers = new HttpHeaders().set('Content-Type','application/json');
+    return this.httpClient.get<ChatUser[]>(this.url+"/search/"+searchTerm,{headers});
+  }
 }

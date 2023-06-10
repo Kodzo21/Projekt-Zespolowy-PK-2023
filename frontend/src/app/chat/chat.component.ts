@@ -1,5 +1,5 @@
 import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
-import { Router } from "@angular/router";
+import {Router} from "@angular/router";
 import {MatDialog} from "@angular/material/dialog";
 import {SettingsComponent} from "../settings/settings.component";
 import {AddUserComponent} from "../add-user/add-user.component";
@@ -7,47 +7,72 @@ import {CreateGroupComponent} from "../create-group/create-group.component";
 import {Message} from "../_models/message";
 import {WebsocketService} from "../_services/websocket.service";
 import {ChatUser} from "../_models/ChatUser";
-import {AuthService} from "../_services/auth.service";
 import {UserService} from "../_services/user.service";
-import {ChangeDetection} from "@angular/cli/lib/config/workspace-schema";
-import {map, Observable, of} from "rxjs";
+import {debounceTime} from "rxjs";
+import {FormControl} from "@angular/forms";
+import {ConversationService} from "../_services/conversation.service";
+import {Conversation} from "../_models/Conversation";
+import {MessageService} from "../_services/message.service";
 
 @Component({
   selector: 'app-chat',
   templateUrl: './chat.component.html',
   styleUrls: ['./chat.component.css']
 })
-export class ChatComponent implements OnInit{
+export class ChatComponent implements OnInit {
 
+  userSearchControl: FormControl<string> = new FormControl();
 
-  userList: ChatUser[] = [];
+  filteredUsers: ChatUser[] = [];
 
-  filteredUsers: any[] = [];
-
+  currentConversation: number = 0;
   currentUser: string = '';
   newMessage: string = '';
 
-  messMap : Observable<Map<string,Message[]>> = of(new Map<string,Message[]>());
-  messagesMap: Map<string,Message[]> = new Map<string,Message[]>();
-  constructor(private router: Router,private dialog: MatDialog,
-              private webSocketService:WebsocketService,
+  conversations: Conversation[] = [];
+
+  constructor(private router: Router, private dialog: MatDialog,
+              private webSocketService: WebsocketService,
               private userService: UserService,
-              private changeDetectorRef: ChangeDetectorRef
-              ) {}
+              private changeDetectorRef: ChangeDetectorRef,
+              private conversationService: ConversationService,
+              private messageService: MessageService
+  ) {
+    this.userSearchControl.valueChanges.pipe(
+      debounceTime(500),
+    ).subscribe(searchTerm => {
+      this.searchUsers(searchTerm);
+    })
+  }
 
   ngOnInit() {
-    this.filteredUsers = this.userList;
-    //todo: u siebie rob jak u siebie
-    this.messMap= this.webSocketService.messages;
-    this.messMap.subscribe(
-      map => {
-        this.messagesMap = map;
-        this.changeDetectorRef.detectChanges();
-      }
-    )
-    this.userService.getUsers().subscribe(response =>{
-      this.userList = response;
+    this.conversationService.getConversations().subscribe(response => {
+      console.log(response);
+
+      response.map(conversation => {
+        this.currentConversation = conversation.id;
+        this.messageService.getMessages(conversation.id).subscribe(messageList => {
+          conversation.messages = messageList;
+          this.changeDetectorRef.detectChanges();
+        });
+        this.conversations.push(conversation);
+      })
+      this.changeDetectorRef.detectChanges();
     });
+
+
+    //todo: do rozkminienia czemu w to nie wchodzi
+    this.webSocketService.messages.subscribe(map => {
+      console.log("im here bro ")
+        map.forEach((value:Message[], key:number) => {
+          this.conversations.find(conversation => conversation.id === key)?.messages.push(...value);
+          console.log('appended new messages to conversation');
+          console.log(this.conversations.find(conversation => conversation.id == key));
+          this.changeDetectorRef.detectChanges();
+        });
+      }
+    );
+
   }
 
   logout() {
@@ -58,40 +83,39 @@ export class ChatComponent implements OnInit{
     this.router.navigate(['/canvas']);
   }
 
-  selectUser(user: any) {
+  selectUser(user: ChatUser) {
     this.currentUser = user.id;
+    this.currentConversation = 0;
   }
 
-  sendMessage() {
+  selectConversation(conversationId: number) {
+    this.currentConversation = conversationId;
+    this.currentUser = '';
+  }
+
+  sendMessage(conversationId: number | null) {
     // if (this.newMessage) {
     //   this.messages.push({ sender: this.currentUser, text: this.newMessage });
     //   this.newMessage = '';
     // }
-    let mess:Message = {
+    let mess: Message = {
       sender: localStorage.getItem('id')!,
       text: this.newMessage,
-      receiver : this.currentUser,
+      receiver: conversationId ? null : this.currentUser,
       date: new Date(),
-      conversation: null
+      conversation: conversationId ? conversationId : null
     }
     this.webSocketService.sendMessage(mess);
-    this.messMap.subscribe(map => {
-      if (map.has(mess.receiver)){
-        map.get(mess.receiver)?.push(mess);
-      }else {
-        map.set(mess.receiver,[mess]);
-      }
+  }
+
+  openToSettings() {
+    const dialogRef = this.dialog.open(SettingsComponent, {
+      width: '400px',
+      data: {} // Możesz przekazać dane do dialogu, jeśli jest to potrzebne
     });
   }
 
-  openToSettings(){
-      const dialogRef = this.dialog.open(SettingsComponent, {
-        width: '400px',
-        data: {} // Możesz przekazać dane do dialogu, jeśli jest to potrzebne
-      });
-}
-
-  openToAddFrined(){
+  openToAddFrined() {
     const dialogRef = this.dialog.open(AddUserComponent, {
       width: '400px',
       height: '220px',
@@ -99,14 +123,13 @@ export class ChatComponent implements OnInit{
     });
   }
 
-  searchUsers() {
-    if (this.currentUser) {
-      this.filteredUsers = this.userList.filter(user =>
-        user.name.toLowerCase().includes(this.currentUser.toLowerCase())
+  searchUsers(searchTerm: string) {
+    if (searchTerm != null && searchTerm.length > 1)
+      this.userService.getFilteredUsers(searchTerm).subscribe(response => {
+          this.filteredUsers = response;
+        }
       );
-    } else {
-      this.filteredUsers = this.userList;
-    }
+
   }
 
   openCreateGroup() {
@@ -117,5 +140,9 @@ export class ChatComponent implements OnInit{
     });
   }
 
-  protected readonly map = map;
+  protected readonly localStorage = localStorage;
+
+  getMessages(): Message[] | undefined {
+    return this.conversations.find(conversation => conversation.id == this.currentConversation)?.messages;
+  }
 }

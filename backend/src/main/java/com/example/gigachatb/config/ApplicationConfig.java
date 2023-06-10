@@ -1,5 +1,7 @@
 package com.example.gigachatb.config;
 
+import com.example.gigachatb.conversation.ConversationMapper;
+import com.example.gigachatb.user.UserMapper;
 import com.example.gigachatb.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;

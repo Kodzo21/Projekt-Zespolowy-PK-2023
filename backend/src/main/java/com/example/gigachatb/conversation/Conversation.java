@@ -4,17 +4,15 @@ import com.example.gigachatb.user.User;
 import jakarta.persistence.*;
 import com.example.gigachatb.file.File;
 import com.example.gigachatb.message.Message;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.sql.Timestamp;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 
-@Data
+@Getter
+@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -29,17 +27,16 @@ public class Conversation {
     private Timestamp startTime;
 
     @OneToMany(mappedBy = "conversationByConversationId")
-    @Column(insertable = false,updatable = false)
-    private Collection<File> filesByConversationId;
+    private List<File> filesByConversationId;
     @OneToMany(mappedBy = "conversationByConversationId")
-    @Column(insertable = false,updatable = false)
-    private Collection<Message> messagesByConversationId;
+    private List<Message> messagesByConversationId;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "participant",
             joinColumns = @JoinColumn(name = "conversation_id"),
             inverseJoinColumns = @JoinColumn(name = "user_id"))
+
     private List<User> users;
 
     @Override

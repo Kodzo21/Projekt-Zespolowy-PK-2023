@@ -1,8 +1,11 @@
 package com.example.gigachatb.user;
 
+import org.springframework.context.annotation.Bean;
+
 import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+
 
 public class UserMapper implements Function<User,UserResponse> {
     @Override
@@ -18,4 +21,6 @@ public class UserMapper implements Function<User,UserResponse> {
                 .map(this)
                 .collect(Collectors.toList());
     }
+
+
 }
