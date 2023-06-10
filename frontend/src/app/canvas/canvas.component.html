@@ -3,6 +3,7 @@
     <div class="interaction-container">
       <app-color-picker (colorEvent)="pickColor($event)" />
       <button (click)="clearCanvas()">CLEAR!</button>
+      <button (click)="clearBackground()">CLEAR BACkGROUND!</button>
       <app-line-width-picker (widthEvent)="pickLineWidth($event)" />
       <button type="button" class="btn btn-success" (click)="changeLineDrawing()">Line</button>
       <button type="button" class="btn btn-success" (click)="changeEraseMode()">Erase</button>
@@ -10,7 +11,7 @@
     </div>
 
     <div class="board-container">
-      <img class="canvas-background" id="background" src="/assets/images/logo.svg" alt=""
+      <img class="canvas-background" id="background" src="{{backgroundURL}}" alt=""
            (mousedown)="pressEventHandler($event)"
            (mouseup)="releaseEventHandler($event)"
            (mousemove)="dragEventHandler($event)"

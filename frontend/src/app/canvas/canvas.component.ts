@@ -24,6 +24,8 @@ export class CanvasComponent implements AfterViewInit {
   private drawLine: boolean = false;
   private erase: boolean = false;
 
+  public backgroundURL: string = "/assets/images/No_image.svg";
+
   ngAfterViewInit(): void {
     // get the context
     const canvasEl: HTMLCanvasElement = this.canvas.nativeElement;
@@ -160,6 +162,7 @@ export class CanvasComponent implements AfterViewInit {
     };
   }
 
+
   public changeLineDrawing(){
     this.drawLine = !this.drawLine;
     this.erase = false;
@@ -179,7 +182,12 @@ export class CanvasComponent implements AfterViewInit {
 
     if(files && files.item(0)){
       url = window.URL.createObjectURL(files[0]);
+      this.backgroundURL = url;
+      console.log(url);
     }
   }
 
+  clearBackground() {
+    this.backgroundURL = "/assets/images/No_image.svg";
+  }
 }
