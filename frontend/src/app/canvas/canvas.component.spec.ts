@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { LineWidthPickerComponent } from './line-width-picker.component';
+import { CanvasComponent } from './canvas.component';
 
-describe('LineWidthPickerComponent', () => {
-  let component: LineWidthPickerComponent;
-  let fixture: ComponentFixture<LineWidthPickerComponent>;
+describe('CanvasComponent', () => {
+  let component: CanvasComponent;
+  let fixture: ComponentFixture<CanvasComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ LineWidthPickerComponent ]
+      declarations: [ CanvasComponent ]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(LineWidthPickerComponent);
+    fixture = TestBed.createComponent(CanvasComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
