@@ -4,16 +4,18 @@
       <app-color-picker (colorEvent)="pickColor($event)" />
       <button (click)="clearCanvas()">CLEAR!</button>
       <app-line-width-picker (widthEvent)="pickLineWidth($event)" />
+      <button type="button" class="btn btn-success" (click)="changeLineDrawing()">Line</button>
+      <button type="button" class="btn btn-success" (click)="changeEraseMode()">Erase</button>
     </div>
 
     <div class="board-container">
       <canvas class="board" id="board" #board
               (mousedown)="pressEventHandler($event)"
-              (mouseup)="releaseEventHandler()"
+              (mouseup)="releaseEventHandler($event)"
               (mousemove)="dragEventHandler($event)"
               (mouseout)="cancelEventHandler()"
               (touchstart)="pressEventHandler($event)"
-              (touchend)="releaseEventHandler()"
+              (touchend)="releaseEventHandler($event)"
               (touchmove)="dragEventHandler($event)"
               (touchcancel)="cancelEventHandler()"
       ></canvas>

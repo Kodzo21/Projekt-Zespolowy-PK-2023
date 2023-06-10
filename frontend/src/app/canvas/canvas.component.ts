@@ -10,7 +10,6 @@ export class CanvasComponent implements AfterViewInit {
   @ViewChild('board')
   private canvas!: ElementRef<HTMLCanvasElement>;
 
-
   private width: number = 1000;
   private height: number = 1000;
 
@@ -21,6 +20,9 @@ export class CanvasComponent implements AfterViewInit {
     y: number }
 
   private paint: boolean = false;
+
+  private drawLine: boolean = false;
+  private erase: boolean = false;
 
   ngAfterViewInit(): void {
     // get the context
@@ -36,13 +38,22 @@ export class CanvasComponent implements AfterViewInit {
     this.context.lineCap = 'round';
     this.context.lineJoin = 'round';
     this.context.strokeStyle = "rgba(0, 0, 0, 1)";
+
+    //set background as image
+    //this.drawImageOnCanvas("https://www.google.com/url?sa=i&url=https%3A%2F%2Fzoo24.pl%2Fblog%2Fkot-brytyjski-n66&psig=AOvVaw1qwsHWYxaFtvIIU79-Da-_&ust=1686262801589000&source=images&cd=vfe&ved=0CBEQjRxqFwoTCPCFnsyYsv8CFQAAAAAdAAAAABAE");
   }
 
   public clearCanvas() {
     this.context.clearRect(0, 0, this.canvas.nativeElement.width, this.canvas.nativeElement.height);
+    this.drawLine = false;
+    this.erase = false;
   }
 
-  public releaseEventHandler = () => {
+  public releaseEventHandler = (e: MouseEvent | TouchEvent) => {
+    if(this.drawLine){
+      const currentPos = this.mousePosition(e);
+      this.drawLineOnCanvas(this.prevPos,currentPos);
+    }
     this.paint = false;
   }
 
@@ -56,18 +67,19 @@ export class CanvasComponent implements AfterViewInit {
 
     this.prevPos = currentPos;
     this.paint = true;
-    this.drawOnCanvas(this.prevPos,currentPos);
+    if(!this.drawLine){
+      this.drawOnCanvas(this.prevPos,currentPos);
+    }
   }
 
   public dragEventHandler = (e: MouseEvent | TouchEvent) => {
 
     const currentPos = this.mousePosition(e);
 
-    if(this.paint){
+    if(this.paint && !this.drawLine){
       this.drawOnCanvas(this.prevPos,currentPos);
       this.prevPos = currentPos;
     }
-
     e.preventDefault();
   }
 
@@ -80,6 +92,38 @@ export class CanvasComponent implements AfterViewInit {
   }
 
   private drawOnCanvas(
+    prevPos: { x: number, y: number },
+    currentPos: { x: number, y: number }
+  )
+  {
+    // in case the context is not set
+    if (!this.context) { return; }
+
+    // start our drawing path
+    this.context.beginPath();
+
+    if(this.erase){
+      this.context.globalCompositeOperation="destination-out";
+    }
+    else{
+      this.context.globalCompositeOperation="source-over";
+    }
+
+    // we're drawing lines so we need a previous position
+    if (prevPos) {
+
+      // sets the start point
+      this.context.moveTo(prevPos.x, prevPos.y); // from
+
+      // draws a line from the start pos until the current position
+      this.context.lineTo(currentPos.x, currentPos.y);
+
+      // strokes the current path with the styles we set earlier
+      this.context.stroke();
+    }
+  }
+
+  private drawLineOnCanvas(
     prevPos: { x: number, y: number },
     currentPos: { x: number, y: number }
   )
@@ -116,5 +160,29 @@ export class CanvasComponent implements AfterViewInit {
       x: mouseX,
       y: mouseY
     };
+  }
+
+  public changeLineDrawing(){
+    this.drawLine = !this.drawLine;
+    this.erase = false;
+  }
+
+  public changeEraseMode(){
+    this.erase = !this.erase;
+    this.drawLine = false;
+  }
+
+  private drawImageOnCanvas(imageUrl: string){
+
+    let background = new Image();
+    background.src = imageUrl;
+
+    let scale = Math.min(this.canvas.nativeElement.width / background.width, this.canvas.nativeElement.height / background.height);
+    let width = background.width * scale;
+    let height = background.height * scale;
+    let x = this.canvas.nativeElement.width / 2 - width / 2;
+    let y = this.canvas.nativeElement.height / 2 - height / 2;
+
+    this.context.drawImage(background, x, y, width, height)
   }
 }
