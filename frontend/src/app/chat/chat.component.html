@@ -29,7 +29,7 @@
 
     <div class="message-window">
       <div class="top-bar">
-        <button class="canvas-button" (click)="goToCanvas()"><mat-icon>mode_edit</mat-icon></button>
+        <button class="canvas-button" (click)="goToCanvas(currentConversation)"><mat-icon>mode_edit</mat-icon></button>
       </div>
       <div class="messages">
         <div *ngFor="let message of getMessages()" class="message" [ngClass]="{'my-message': message.sender === localStorage.getItem('id')}">

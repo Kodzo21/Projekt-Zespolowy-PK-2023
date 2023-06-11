@@ -1,5 +1,7 @@
-import {AfterViewInit, ChangeDetectorRef, Component, ElementRef, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, ElementRef, ViewChild} from '@angular/core';
 import {WebsocketService} from "../_services/websocket.service";
+import {Canvas} from "../_models/canvas";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-canvas',
@@ -27,14 +29,21 @@ export class CanvasComponent implements AfterViewInit {
 
   public backgroundURL: string = "/assets/images/No_image.svg";
 
-  private data: string ="";
+  private data: string|undefined ="";
 
-  private timeout: number=0;
+  private timeout: number = 0;
+
+  private readonly conversationId: number;
 
   constructor(
     private webSocketService: WebsocketService,
-    private changeDetectorRef : ChangeDetectorRef
+    private router : Router
   ) {
+      this.conversationId = this.router.getCurrentNavigation()?.extras?.state?.['conversationId'];
+
+      if(!this.conversationId){
+        this.conversationId = -1;
+      }
   }
 
   ngAfterViewInit(): void {
@@ -51,6 +60,13 @@ export class CanvasComponent implements AfterViewInit {
     this.context.lineCap = 'round';
     this.context.lineJoin = 'round';
     this.context.strokeStyle = "rgba(0, 0, 0, 1)";
+
+    //subscribe to webSocket and refresh canvas data any time they change
+    this.webSocketService.canvasMap.subscribe(map => {
+      this.data = map.get(this.conversationId);
+      this.loadData();
+      console.log("data change");
+    })
   }
 
   public clearCanvas() {
@@ -133,12 +149,20 @@ export class CanvasComponent implements AfterViewInit {
       this.context.stroke();
 
       const root = this;
-
+      let canvas : Canvas;
       if(root.timeout) clearTimeout(root.timeout);
 
       this.timeout = setTimeout(function (){
         root.saveData();
-        //root.webSocketService.send
+
+        if(root.data){
+          canvas = {
+            conversationId: root.conversationId,
+            data: root.data
+          }
+        }
+
+        root.webSocketService.sendCanvas(canvas);
 
       },1000);
     }
@@ -216,7 +240,6 @@ export class CanvasComponent implements AfterViewInit {
   }
 
   public loadData(){
-
     const image = new Image();
     const ctx = this.context;
 
@@ -224,6 +247,8 @@ export class CanvasComponent implements AfterViewInit {
       ctx.drawImage(image,0,0);
     }
 
-    image.src = this.data;
+    if(this.data){
+      image.src = this.data;
+    }
   }
 }
