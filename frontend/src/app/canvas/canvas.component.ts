@@ -28,6 +28,8 @@ export class CanvasComponent implements AfterViewInit {
 
   private data: string ="";
 
+  private timeout: number=0;
+
   ngAfterViewInit(): void {
     // get the context
     const canvasEl: HTMLCanvasElement = this.canvas.nativeElement;
@@ -122,6 +124,14 @@ export class CanvasComponent implements AfterViewInit {
 
       // strokes the current path with the styles we set earlier
       this.context.stroke();
+
+      const root = this;
+
+      if(root.timeout) clearTimeout(root.timeout);
+
+      this.timeout = setTimeout(function (){
+        root.saveData();
+      },1000);
     }
   }
 
@@ -194,7 +204,6 @@ export class CanvasComponent implements AfterViewInit {
 
   public saveData(){
     this.data = this.canvas.nativeElement.toDataURL("image/png",1.0);
-    console.log(this.data);
   }
 
   public loadData(){
