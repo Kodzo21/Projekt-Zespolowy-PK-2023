@@ -222,5 +222,34 @@ export class ChatComponent implements OnInit {
     }
 
   }
+
+  getNameById(userId: string) {
+
+    let currentConversationObj;
+    let conversations = this.conversations;
+
+    if(conversations){
+      for (let i = 0; i < this.conversations.length; i++) {
+        if(this.conversations.at(i)?.id === this.currentConversation){
+          currentConversationObj = this.conversations.at(i);
+        }
+      }
+    }
+
+    let users;
+    if(currentConversationObj){
+      users = currentConversationObj.participants;
+    }
+
+    if(users){
+      for (let i = 0; i < 2; i++) {
+        if(userId === users[i].id){
+          return users[i].name;
+        }
+      }
+    }
+
+    return "";
+  }
 }
 

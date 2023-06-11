@@ -4,7 +4,7 @@
   <div class="message-container">
     <div class="user-list">
       <div  class="my-user-info">
-        <label>{{getLoggedUserName()}}</label>
+        <label>{{getLoggedUserName()+" " + localStorage.getItem("id")}}</label>
       </div>
       <mat-form-field class="search-user">
 
@@ -36,7 +36,7 @@
       </div>
       <div class="messages">
         <div *ngFor="let message of getMessages()" class="message" [ngClass]="{'my-message': message.sender === localStorage.getItem('id'),'other-message': message.sender !== localStorage.getItem('id')}">
-          <span>{{ message.sender }}:</span>
+          <span>{{ getNameById(message.sender)}}</span>
           <p>{{ message.text }}</p>
         </div>
       </div>
