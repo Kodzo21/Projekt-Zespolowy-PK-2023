@@ -7,11 +7,15 @@ import {Conversation} from "../_models/Conversation";
 })
 export class ConversationService {
 
-  readonly url:string = "http://localhost:8080/api/v1/conversation";
+  readonly url:string = "http://localhost:8080/api/v1/conversation/";
   constructor(private httpClient:HttpClient) { }
 
 
   getConversations(){
-    return this.httpClient.get<Conversation[]>(this.url+"/all");
+    return this.httpClient.get<Conversation[]>(this.url+"all");
+  }
+
+  getConversation(id: number) {
+      return this.httpClient.get<Conversation>(this.url+id);
   }
 }
