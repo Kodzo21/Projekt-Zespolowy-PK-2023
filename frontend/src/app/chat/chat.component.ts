@@ -13,6 +13,7 @@ import {FormControl} from "@angular/forms";
 import {ConversationService} from "../_services/conversation.service";
 import {Conversation} from "../_models/Conversation";
 import {MessageService} from "../_services/message.service";
+import {AuthService} from "../_services/auth.service";
 
 @Component({
   selector: 'app-chat',
@@ -36,7 +37,8 @@ export class ChatComponent implements OnInit {
               private userService: UserService,
               private changeDetectorRef: ChangeDetectorRef,
               private conversationService: ConversationService,
-              private messageService: MessageService
+              private messageService: MessageService,
+              private authService: AuthService
   ) {
     this.userSearchControl.valueChanges.pipe(
       debounceTime(500),
@@ -87,10 +89,15 @@ export class ChatComponent implements OnInit {
       this.changeDetectorRef.detectChanges();
     }
     });
+
+
   }
 
   logout() {
-    // Logika wylogowania użytkownika
+    this.authService.logout().subscribe(res => {
+      this.router.navigate(['/login']);
+    });
+
   }
 
   goToCanvas(conversationId : number) {
@@ -143,7 +150,6 @@ export class ChatComponent implements OnInit {
           this.filteredUsers = response;
         }
       );
-
   }
 
   openCreateGroup() {
