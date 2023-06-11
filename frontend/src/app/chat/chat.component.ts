@@ -88,12 +88,13 @@ export class ChatComponent implements OnInit {
     }
     });
   }
+
   logout() {
     // Logika wylogowania użytkownika
   }
 
-  goToCanvas() {
-    this.router.navigate(['/canvas']);
+  goToCanvas(conversationId : number) {
+    this.router.navigate(['/canvas/'],{state: {conversationId: conversationId}});
   }
 
   selectUser(user: ChatUser) {

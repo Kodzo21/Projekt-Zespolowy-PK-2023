@@ -3,10 +3,12 @@
     <div class="interaction-container">
       <app-color-picker (colorEvent)="pickColor($event)" />
       <button (click)="clearCanvas()">CLEAR!</button>
-      <button (click)="clearBackground()">CLEAR BACkGROUND!</button>
+      <button (click)="clearBackground()">CLEAR BACKGROUND!</button>
       <app-line-width-picker (widthEvent)="pickLineWidth($event)" />
       <button type="button" class="btn btn-success" (click)="changeLineDrawing()">Line</button>
       <button type="button" class="btn btn-success" (click)="changeEraseMode()">Erase</button>
+      <button type="button" class="btn btn-success" (click)="saveData()">Save</button>
+      <button type="button" class="btn btn-success" (click)="loadData()">Load</button>
       <app-background-picker (imageEvent)="pickImage($event)" />
     </div>
 

@@ -18,8 +18,6 @@ export class WebsocketService {
   messagesSubj : BehaviorSubject<Map<number, Message>> = new BehaviorSubject<Map<number, Message>>(new Map<number, Message>());
   canvasMap: BehaviorSubject<Map<number,string>> = new BehaviorSubject<Map<number,string>>(new Map<number,string>());
 
-
-
   constructor() {
     this.stompClient = new Client()
     this.initializeWebSocketConnection(localStorage.getItem('id')!);
