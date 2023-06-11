@@ -4,7 +4,7 @@
   background-color: rgb(255, 255, 255, 0);
 }
 
-.color-picker-container {
+.interaction-container {
   text-align: center;
   margin: auto auto;
   height: 5vh;
@@ -18,14 +18,25 @@
 }
 
 .board-container {
+  position: relative;
   width: 85%;
   height: 85%;
   margin: 1% auto;
   border: 1px solid black;
 }
 
-.board {
+.board-container > * {
+  position: absolute;
   height: 100%;
   width: 100%;
+}
+
+.board {
   background-color: rgba(224, 9, 9, 0);
 }
+
+.canvas-background{
+  background-color: rgba(0, 0, 0, 0);
+}
+
+
