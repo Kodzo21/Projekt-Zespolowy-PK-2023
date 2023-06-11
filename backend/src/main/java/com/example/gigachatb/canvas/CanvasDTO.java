@@ -7,6 +7,6 @@ import lombok.Data;
 @Builder
 @Data
 public class CanvasDTO {
-    int conversationId;
+    int conversation;
     String data;
 }

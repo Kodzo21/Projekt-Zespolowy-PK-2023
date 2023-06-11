@@ -1,4 +1,4 @@
 export interface Canvas{
-    conversationId: number;
+    conversation: number;
     data:string;
 }
