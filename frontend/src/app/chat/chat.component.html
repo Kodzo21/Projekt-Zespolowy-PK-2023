@@ -4,7 +4,7 @@
   <div class="message-container">
     <div class="user-list">
       <div  class="my-user-info">
-        <label>{{localStorage.getItem("id")}}</label>
+        <label>{{getLoggedUserName()}}</label>
       </div>
       <mat-form-field class="search-user">
 
@@ -17,8 +17,8 @@
       </mat-form-field>
       <ul>
         <li *ngFor="let conversation of conversations;let i = index" (click)="selectConversation(conversation.id) " [ngStyle]="{'background-color': currentConversation===conversation.id ? '#e3f2fd' : ' #fafafa'}" >
-         <div class="sender-name">sender name</div>
-          <div class="last-message-in-side-bar">{{ (conversation.messages[(conversation.messages.length - 1)].text.length > 50) ? (conversation.messages[(conversation.messages.length - 1)].text | slice:0:50) + '...' : conversation.messages[(conversation.messages.length - 1)].text }}</div>
+         <div class="sender-name">{{ getOtherUserNameByConversation(conversation)}}</div>
+          <div class="last-message-in-side-bar">{{ getLastMessageInSideBarByMessages(conversation.messages)}}</div>
         </li>
       </ul>
       <div class="user-options-bar">
