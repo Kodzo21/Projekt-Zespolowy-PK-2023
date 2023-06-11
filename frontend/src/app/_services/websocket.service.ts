@@ -30,7 +30,7 @@ export class WebsocketService {
 
   sendCanvas(canvas: Canvas) {
     console.log(canvas);
-    this.stompClient.publish({destination: "/app/canvasr", body: JSON.stringify(canvas)});
+    this.stompClient.publish({destination: "/app/canvas", body: JSON.stringify(canvas)});
   }
 
 
@@ -57,7 +57,7 @@ export class WebsocketService {
 
       this.stompClient.subscribe("/topic/canvas/" + uniqueId, (message) => {
         let canv:Canvas = JSON.parse(message.body);
-        this.canvasMap.next(this.canvasMap.getValue().set(canv.conversationId, canv.data));
+        this.canvasMap.next(this.canvasMap.getValue().set(canv.conversation, canv.data));
       });
     };
 

@@ -149,20 +149,20 @@ export class CanvasComponent implements AfterViewInit {
       this.context.stroke();
 
       const root = this;
-      let canvas : Canvas;
       if(root.timeout) clearTimeout(root.timeout);
 
       this.timeout = setTimeout(function (){
         root.saveData();
 
         if(root.data){
-          canvas = {
-            conversationId: root.conversationId,
+          let canvas :Canvas= {
+            conversation: root.conversationId,
             data: root.data
           }
+          root.webSocketService.sendCanvas(canvas);
         }
 
-        root.webSocketService.sendCanvas(canvas);
+
 
       },1000);
     }

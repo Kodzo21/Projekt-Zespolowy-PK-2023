@@ -21,11 +21,10 @@ public class CanvasSocket {
     private final SimpMessagingTemplate simpMessagingTemplate;
 
     @SendTo("/topic/canvas")
-    @MessageMapping("/canvasr")
+    @MessageMapping("/canvas")
     public void sendCanvas(CanvasDTO canvasDTO) {
-
-        var userList = conversationService.getUsersUniqueIDByConversationId(canvasDTO.getConversationId());
-        //TODO: set id as websocket session
+        log.info("CanvasDTO: " + canvasDTO.toString());
+        var userList = conversationService.getUsersUniqueIDByConversationId(canvasDTO.getConversation());
         try {
             for (String id : userList) {
                 log.info("Sending message to user: " + id);
