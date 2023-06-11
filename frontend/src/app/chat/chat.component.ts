@@ -29,7 +29,10 @@ export class ChatComponent implements OnInit {
   currentUser: string = '';
   newMessage: string = '';
 
+  myUser?:ChatUser;
+
   conversations: Conversation[] = [];
+
 
   constructor(private router: Router, private dialog: MatDialog,
               private webSocketService: WebsocketService,
@@ -60,7 +63,6 @@ export class ChatComponent implements OnInit {
       this.changeDetectorRef.detectChanges();
     });
 
-
     //todo: do rozkminienia czemu w to nie wchodzi
     this.webSocketService.messages.subscribe(map => {
       console.log("im here bro ")
@@ -76,7 +78,8 @@ export class ChatComponent implements OnInit {
   }
 
   logout() {
-    // Logika wylogowania użytkownika
+    localStorage.clear();
+    this.router.navigate(['']);
   }
 
   goToCanvas() {
@@ -106,6 +109,7 @@ export class ChatComponent implements OnInit {
       conversation: conversationId ? conversationId : null
     }
     this.webSocketService.sendMessage(mess);
+    this.newMessage='';
   }
 
   openToSettings() {
@@ -141,6 +145,7 @@ export class ChatComponent implements OnInit {
   }
 
   protected readonly localStorage = localStorage;
+
 
   getMessages(): Message[] | undefined {
     return this.conversations.find(conversation => conversation.id == this.currentConversation)?.messages;

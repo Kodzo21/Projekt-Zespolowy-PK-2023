@@ -4,7 +4,6 @@ import {RegisterComponent} from "./auth/register/register.component";
 import {CanvasComponent} from "./canvas/canvas.component";
 import {LoginComponent} from "./auth/login/login.component";
 import {ChatComponent} from "./chat/chat.component";
-import {SettingsComponent} from "./settings/settings.component";
 
 const routes: Routes = [
   {path: 'register' ,component:  RegisterComponent},
