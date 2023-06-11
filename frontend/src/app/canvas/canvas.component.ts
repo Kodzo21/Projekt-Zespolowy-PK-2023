@@ -65,7 +65,7 @@ export class CanvasComponent implements AfterViewInit {
     this.webSocketService.canvasMap.subscribe(map => {
       this.data = map.get(this.conversationId);
       this.loadData();
-      console.log("data change");
+      console.log("data change - canvas");
     })
   }
 
@@ -163,7 +163,7 @@ export class CanvasComponent implements AfterViewInit {
         }
 
 
-
+        console.log("data send - canvas");
       },1000);
     }
   }
@@ -246,6 +246,8 @@ export class CanvasComponent implements AfterViewInit {
     image.onload = function (){
       ctx.drawImage(image,0,0);
     }
+
+    console.log("data load - canvas");
 
     if(this.data){
       image.src = this.data;
