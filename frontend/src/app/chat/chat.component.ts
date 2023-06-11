@@ -43,6 +43,7 @@ export class ChatComponent implements OnInit {
     ).subscribe(searchTerm => {
       this.searchUsers(searchTerm);
     })
+
   }
 
   ngOnInit() {
@@ -63,13 +64,15 @@ export class ChatComponent implements OnInit {
 
     //todo: do rozkminienia czemu w to nie wchodzi
     this.webSocketService.messages.subscribe(map => {
-      console.log("im here bro ")
-        map.forEach((value:Message[], key:number) => {
-          this.conversations.find(conversation => conversation.id === key)?.messages.push(...value);
-          console.log('appended new messages to conversation');
-          console.log(this.conversations.find(conversation => conversation.id == key));
-          this.changeDetectorRef.detectChanges();
-        });
+        console.log("im here bro ")
+        console.log(map);
+        map.forEach((value, key) => {
+          this.conversations.find(conversation => conversation.id == key)?.messages.push(...value);
+
+
+        } )
+      console.log("done");
+        this.changeDetectorRef.detectChanges();
       }
     );
 

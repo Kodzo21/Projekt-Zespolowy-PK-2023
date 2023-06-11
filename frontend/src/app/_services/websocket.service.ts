@@ -2,8 +2,9 @@ import {Injectable} from '@angular/core';
 import {Client} from "@stomp/stompjs";
 import * as SockJS from 'sockjs-client';
 import {Message} from "../_models/message";
-import {Observable, of} from "rxjs";
+import {BehaviorSubject, Observable, of} from "rxjs";
 import {Conversation} from "../_models/Conversation";
+import {Canvas} from "../_models/canvas";
 
 @Injectable({
   providedIn: 'root'
@@ -13,7 +14,11 @@ export class WebsocketService {
   //class responsible for websocket connection
 
   private stompClient: Client;
-  messages: Observable<Map<number, Message[]>> = of(new Map<number, Message[]>());
+  messagesSubj: BehaviorSubject<Map<number, Message[]>> = new BehaviorSubject<Map<number, Message[]>>(new Map<number, Message[]>());
+  messages = this.messagesSubj.asObservable();
+  canvasMap: Observable<Map<number,string>> = of(new Map<number,string>());
+
+
 
   constructor() {
     this.stompClient = new Client()
@@ -24,6 +29,12 @@ export class WebsocketService {
     console.log(message);
     this.stompClient.publish({destination: "/app/hello", body: JSON.stringify(message)});
   }
+
+  sendCanvas(canvas: Canvas) {
+    console.log(canvas);
+    this.stompClient.publish({destination: "/app/canvasr", body: JSON.stringify(canvas)});
+  }
+
 
   public initializeWebSocketConnection(uniqueId: string) {
     if (uniqueId == null) {
@@ -43,17 +54,15 @@ export class WebsocketService {
         console.log('received message');
         let mess: Message = JSON.parse(message.body);
         console.log(mess);
-        this.messages.subscribe(map => {
-          if (map.has(mess.conversation!)) {
-            console.log(mess.text);
-            map.get(mess.conversation!)?.push(mess);
-          } else {
-            console.log(mess.conversation + "    z else");
-            map.set(mess.conversation!, [mess]);
-          }
-        });
 
         console.log(this.messages);
+      });
+
+      this.stompClient.subscribe("/topic/canvas/" + uniqueId, (message) => {
+        let canv:Canvas = JSON.parse(message.body);
+        this.canvasMap.subscribe(map => {
+          map.set(canv.conversationId,canv.data);
+        });
       });
     };
 
