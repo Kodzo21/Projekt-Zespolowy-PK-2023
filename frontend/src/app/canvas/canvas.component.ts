@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, ElementRef, ViewChild} from '@angular/core';
+import {AfterViewInit,  Component, ElementRef, ViewChild} from '@angular/core';
 import {WebsocketService} from "../_services/websocket.service";
 import {Canvas} from "../_models/canvas";
 import {Router} from "@angular/router";
