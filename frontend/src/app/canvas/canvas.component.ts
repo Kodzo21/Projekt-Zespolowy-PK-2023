@@ -1,4 +1,5 @@
-import {AfterViewInit, Component, ElementRef, ViewChild} from '@angular/core';
+import {AfterViewInit, ChangeDetectorRef, Component, ElementRef, ViewChild} from '@angular/core';
+import {WebsocketService} from "../_services/websocket.service";
 
 @Component({
   selector: 'app-canvas',
@@ -29,6 +30,12 @@ export class CanvasComponent implements AfterViewInit {
   private data: string ="";
 
   private timeout: number=0;
+
+  constructor(
+    private webSocketService: WebsocketService,
+    private changeDetectorRef : ChangeDetectorRef
+  ) {
+  }
 
   ngAfterViewInit(): void {
     // get the context
@@ -131,6 +138,8 @@ export class CanvasComponent implements AfterViewInit {
 
       this.timeout = setTimeout(function (){
         root.saveData();
+        //root.webSocketService.send
+
       },1000);
     }
   }
