@@ -18,8 +18,6 @@ export class WebsocketService {
   messages = this.messagesSubj.asObservable();
   canvasMap: Observable<Map<number,string>> = of(new Map<number,string>());
 
-
-
   constructor() {
     this.stompClient = new Client()
     this.initializeWebSocketConnection(localStorage.getItem('id')!);
