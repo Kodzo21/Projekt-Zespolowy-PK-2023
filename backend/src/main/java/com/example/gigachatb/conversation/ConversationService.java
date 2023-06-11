@@ -69,4 +69,8 @@ public class ConversationService {
             var userlist = new ArrayList<>(conversation.get().getUsers());
             return userlist.stream().map(User::getUniqueID).collect(Collectors.toList());
     }
+
+    public ConversationResponse getConversationResponseById(int id) {
+        return new ConversationMapper(userService, new UserMapper()).apply(getConversationById(id));
+    }
 }

@@ -22,7 +22,7 @@ public class CanvasSocket {
 
     @SendTo("/topic/canvas")
     @MessageMapping("/canvasr")
-    public CanvasDTO sendCanvas(CanvasDTO canvasDTO) {
+    public void sendCanvas(CanvasDTO canvasDTO) {
 
         var userList = conversationService.getUsersUniqueIDByConversationId(canvasDTO.getConversationId());
         //TODO: set id as websocket session
@@ -34,7 +34,6 @@ public class CanvasSocket {
         }catch (MessagingException e){
             log.error("Error sending message to user/s: " + e.getMessage());
         }
-        return canvasDTO;
     }
 
 }

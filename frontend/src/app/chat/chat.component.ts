@@ -54,30 +54,40 @@ export class ChatComponent implements OnInit {
         this.currentConversation = conversation.id;
         this.messageService.getMessages(conversation.id).subscribe(messageList => {
           conversation.messages = messageList;
-          this.changeDetectorRef.detectChanges();
         });
         this.conversations.push(conversation);
       })
       this.changeDetectorRef.detectChanges();
+
     });
 
 
     //todo: do rozkminienia czemu w to nie wchodzi
-    this.webSocketService.messages.subscribe(map => {
-        console.log("im here bro ")
-        console.log(map);
-        map.forEach((value, key) => {
-          this.conversations.find(conversation => conversation.id == key)?.messages.push(...value);
+    this.webSocketService.messagesSubj.subscribe(message => {
+      let flag = false;
+      this.conversations.forEach(conversation => {
+         if ( message.get(conversation.id)) {
+            conversation.messages.push(message.get(conversation.id)!);
+            message.delete(conversation.id);
+            let flag=true;
+          }
+         } );
 
-
-        } )
-      console.log("done");
-        this.changeDetectorRef.detectChanges();
-      }
-    );
-
+      if(!flag){
+        message.forEach((value, key) => {
+          this.conversationService.getConversation(key).subscribe(
+            conversation => {
+              this.messageService.getMessages(conversation.id).subscribe(messageList => {
+                conversation.messages = messageList;
+              } );
+              this.conversations.push(conversation);
+            }
+          )
+        });
+      this.changeDetectorRef.detectChanges();
+    }
+    });
   }
-
   logout() {
     // Logika wylogowania użytkownika
   }

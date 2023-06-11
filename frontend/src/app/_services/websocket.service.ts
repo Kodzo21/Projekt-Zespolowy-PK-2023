@@ -5,6 +5,7 @@ import {Message} from "../_models/message";
 import {BehaviorSubject, Observable, of} from "rxjs";
 import {Conversation} from "../_models/Conversation";
 import {Canvas} from "../_models/canvas";
+import {WebSocketSubject} from "rxjs/internal/observable/dom/WebSocketSubject";
 
 @Injectable({
   providedIn: 'root'
@@ -14,9 +15,8 @@ export class WebsocketService {
   //class responsible for websocket connection
 
   private stompClient: Client;
-  messagesSubj: BehaviorSubject<Map<number, Message[]>> = new BehaviorSubject<Map<number, Message[]>>(new Map<number, Message[]>());
-  messages = this.messagesSubj.asObservable();
-  canvasMap: Observable<Map<number,string>> = of(new Map<number,string>());
+  messagesSubj : BehaviorSubject<Map<number, Message>> = new BehaviorSubject<Map<number, Message>>(new Map<number, Message>());
+  canvasMap: BehaviorSubject<Map<number,string>> = new BehaviorSubject<Map<number,string>>(new Map<number,string>());
 
 
 
@@ -54,20 +54,16 @@ export class WebsocketService {
         console.log('received message');
         let mess: Message = JSON.parse(message.body);
         console.log(mess);
-
-        console.log(this.messages);
+        this.messagesSubj.next(this.messagesSubj.getValue().set(mess.conversation!, mess));
       });
 
       this.stompClient.subscribe("/topic/canvas/" + uniqueId, (message) => {
         let canv:Canvas = JSON.parse(message.body);
-        this.canvasMap.subscribe(map => {
-          map.set(canv.conversationId,canv.data);
-        });
+        this.canvasMap.next(this.canvasMap.getValue().set(canv.conversationId, canv.data));
       });
     };
 
     this.stompClient.activate();
   }
-
 
 }
