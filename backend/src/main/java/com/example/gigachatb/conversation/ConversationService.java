@@ -22,7 +22,7 @@ public class ConversationService {
     private final ConversationRepository conversationRepository;
     private final UserService userService;
 
-    public List<String> getUsersUniqueID(MessageDTO messageDTO) {
+    public List<String> getUsersUniqueIDByMessageDTO(MessageDTO messageDTO) {
         var conversation = conversationRepository.findByConversationId(messageDTO.getConversation());
         if(conversation.isEmpty()){
             conversation = Optional.of(Conversation.builder()
@@ -59,5 +59,18 @@ public class ConversationService {
 
     public Conversation getConversationById(int conversation) {
         return conversationRepository.findByConversationId(conversation).orElseThrow();
+    }
+
+    public List<String> getUsersUniqueIDByConversationId(int conversationId) {
+            var conversation = conversationRepository.findByConversationId(conversationId);
+            if(conversation.isEmpty()){
+                return List.of();
+            }
+            var userlist = new ArrayList<>(conversation.get().getUsers());
+            return userlist.stream().map(User::getUniqueID).collect(Collectors.toList());
+    }
+
+    public ConversationResponse getConversationResponseById(int id) {
+        return new ConversationMapper(userService, new UserMapper()).apply(getConversationById(id));
     }
 }

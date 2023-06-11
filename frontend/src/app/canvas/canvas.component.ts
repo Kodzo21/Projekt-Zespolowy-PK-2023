@@ -1,4 +1,7 @@
-import {AfterViewInit, Component, ElementRef, ViewChild} from '@angular/core';
+import {AfterViewInit,  Component, ElementRef, ViewChild} from '@angular/core';
+import {WebsocketService} from "../_services/websocket.service";
+import {Canvas} from "../_models/canvas";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-canvas',
@@ -26,9 +29,22 @@ export class CanvasComponent implements AfterViewInit {
 
   public backgroundURL: string = "/assets/images/No_image.svg";
 
-  private data: string ="";
+  private data: string|undefined ="";
 
-  private timeout: number=0;
+  private timeout: number = 0;
+
+  private readonly conversationId: number;
+
+  constructor(
+    private webSocketService: WebsocketService,
+    private router : Router
+  ) {
+      this.conversationId = this.router.getCurrentNavigation()?.extras?.state?.['conversationId'];
+
+      if(!this.conversationId){
+        this.conversationId = -1;
+      }
+  }
 
   ngAfterViewInit(): void {
     // get the context
@@ -44,6 +60,13 @@ export class CanvasComponent implements AfterViewInit {
     this.context.lineCap = 'round';
     this.context.lineJoin = 'round';
     this.context.strokeStyle = "rgba(0, 0, 0, 1)";
+
+    //subscribe to webSocket and refresh canvas data any time they change
+    this.webSocketService.canvasMap.subscribe(map => {
+      this.data = map.get(this.conversationId);
+      this.loadData();
+      console.log("data change - canvas");
+    })
   }
 
   public clearCanvas() {
@@ -126,11 +149,21 @@ export class CanvasComponent implements AfterViewInit {
       this.context.stroke();
 
       const root = this;
-
       if(root.timeout) clearTimeout(root.timeout);
 
       this.timeout = setTimeout(function (){
         root.saveData();
+
+        if(root.data){
+          let canvas :Canvas= {
+            conversation: root.conversationId,
+            data: root.data
+          }
+          root.webSocketService.sendCanvas(canvas);
+        }
+
+
+        console.log("data send - canvas");
       },1000);
     }
   }
@@ -207,7 +240,6 @@ export class CanvasComponent implements AfterViewInit {
   }
 
   public loadData(){
-
     const image = new Image();
     const ctx = this.context;
 
@@ -215,6 +247,10 @@ export class CanvasComponent implements AfterViewInit {
       ctx.drawImage(image,0,0);
     }
 
-    image.src = this.data;
+    console.log("data load - canvas");
+
+    if(this.data){
+      image.src = this.data;
+    }
   }
 }

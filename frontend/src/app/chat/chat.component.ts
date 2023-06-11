@@ -46,6 +46,7 @@ export class ChatComponent implements OnInit {
     ).subscribe(searchTerm => {
       this.searchUsers(searchTerm);
     })
+
   }
 
   ngOnInit() {
@@ -56,25 +57,38 @@ export class ChatComponent implements OnInit {
         this.currentConversation = conversation.id;
         this.messageService.getMessages(conversation.id).subscribe(messageList => {
           conversation.messages = messageList;
-          this.changeDetectorRef.detectChanges();
         });
         this.conversations.push(conversation);
       })
       this.changeDetectorRef.detectChanges();
+
     });
 
     //todo: do rozkminienia czemu w to nie wchodzi
-    this.webSocketService.messages.subscribe(map => {
-      console.log("im here bro ")
-        map.forEach((value:Message[], key:number) => {
-          this.conversations.find(conversation => conversation.id === key)?.messages.push(...value);
-          console.log('appended new messages to conversation');
-          console.log(this.conversations.find(conversation => conversation.id == key));
-          this.changeDetectorRef.detectChanges();
-        });
-      }
-    );
+    this.webSocketService.messagesSubj.subscribe(message => {
+      let flag = false;
+      this.conversations.forEach(conversation => {
+         if ( message.get(conversation.id)) {
+            conversation.messages.push(message.get(conversation.id)!);
+            message.delete(conversation.id);
+            let flag=true;
+          }
+         } );
 
+      if(!flag){
+        message.forEach((value, key) => {
+          this.conversationService.getConversation(key).subscribe(
+            conversation => {
+              this.messageService.getMessages(conversation.id).subscribe(messageList => {
+                conversation.messages = messageList;
+              } );
+              this.conversations.push(conversation);
+            }
+          )
+        });
+      this.changeDetectorRef.detectChanges();
+    }
+    });
   }
 
   logout() {
@@ -82,8 +96,8 @@ export class ChatComponent implements OnInit {
     this.router.navigate(['']);
   }
 
-  goToCanvas() {
-    this.router.navigate(['/canvas']);
+  goToCanvas(conversationId : number) {
+    this.router.navigate(['/canvas/'],{state: {conversationId: conversationId}});
   }
 
   selectUser(user: ChatUser) {
