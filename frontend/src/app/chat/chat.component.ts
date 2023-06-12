@@ -53,12 +53,13 @@ export class ChatComponent implements OnInit {
 
   ngOnInit() {
     this.num.subscribe(conversation => {
+      if (conversation.id !== undefined && conversation.id !== 0  )   {
       this.messageService.getMessages(conversation.id).subscribe(messageList => {
         conversation.messages = messageList;
       });
       this.conversations.push(conversation);
       this.changeDetectorRef.detectChanges();
-    });
+    }});
     this.conversationService.getConversations().subscribe(response => {
 
       console.log(response);
