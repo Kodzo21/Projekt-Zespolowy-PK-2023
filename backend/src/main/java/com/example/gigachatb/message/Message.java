@@ -24,7 +24,7 @@ public class Message {
     @Column(name = "message_id")
     private int messageId;
     @Basic
-    @Column(name = "text")
+    @Column(name = "text",length = 1000)
     private String text;
     @Basic
     @Column(name = "send_time")

@@ -33,4 +33,11 @@ export class AuthService {
         shareReplay(),
       );
   }
+
+  logout () {
+    localStorage.removeItem('id');
+    localStorage.removeItem('token');
+    localStorage.removeItem('refreshToken');
+    return this.http.get(this.url+"/logout");
+  }
 }

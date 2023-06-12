@@ -16,7 +16,7 @@ export class WebsocketService {
 
   private stompClient: Client;
   messagesSubj : BehaviorSubject<Map<number, Message>> = new BehaviorSubject<Map<number, Message>>(new Map<number, Message>());
-  canvasMap: BehaviorSubject<Map<number,string>> = new BehaviorSubject<Map<number,string>>(new Map<number,string>());
+  canvasMap: BehaviorSubject<Map<number,ArrayBuffer>> = new BehaviorSubject<Map<number,ArrayBuffer>>(new Map<number,ArrayBuffer>());
 
   constructor() {
     this.stompClient = new Client()
@@ -30,7 +30,13 @@ export class WebsocketService {
 
   sendCanvas(canvas: Canvas) {
     console.log(canvas);
-    this.stompClient.publish({destination: "/app/canvas", body: JSON.stringify(canvas)});
+    //print size of object in bytes
+    console.log(JSON.stringify(canvas).length);
+    try {
+      this.stompClient.publish({destination: "/app/canvas", body: JSON.stringify(canvas)});
+    } catch (e) {
+      console.log(e);
+    }
   }
 
 
@@ -60,6 +66,8 @@ export class WebsocketService {
         this.canvasMap.next(this.canvasMap.getValue().set(canv.conversation, canv.data));
       });
     };
+
+
 
     this.stompClient.activate();
   }
