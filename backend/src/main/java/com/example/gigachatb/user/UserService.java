@@ -64,4 +64,17 @@ public class UserService {
     }
 
 
+    public void setNewEmial(User user, String newEmail) {
+        user.setEmail(newEmail);
+        userRepository.save(user);
+    }
+
+    public void setNewPassword(User user, String newPassowrd) {
+        user.setPassword(newPassowrd);
+        userRepository.save(user);
+    }
+
+    public void deleteUser(User user) {
+        userRepository.delete(user);
+    }
 }

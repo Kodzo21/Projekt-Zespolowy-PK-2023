@@ -4,10 +4,8 @@ import com.example.gigachatb.conversation.Conversation;
 import com.example.gigachatb.file.File;
 import com.example.gigachatb.message.Message;
 import com.example.gigachatb.security.token.Token;
-import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.DialectOverride;
 import org.hibernate.annotations.Generated;
 import org.hibernate.annotations.GenerationTime;
 import org.springframework.security.core.GrantedAuthority;
@@ -48,16 +46,16 @@ public class User implements UserDetails {
     @Column(name = "unique_id", unique = true,columnDefinition = "varchar(255) default '#'::text || lpad(((nextval('user_user_id_seq'::regclass))::character varying)::text, 5, '0'::text)")
     private String uniqueID;
 
-    @OneToMany(mappedBy = "userByUserUploadingId")
+    @OneToMany(mappedBy = "userByUserUploadingId",cascade = CascadeType.ALL)
     private List<File> filesByUserId;
 
-    @OneToMany(mappedBy = "userByUserSendingId")
+    @OneToMany(mappedBy = "userByUserSendingId" ,cascade = CascadeType.ALL)
     private List<Message> messagesByUserId;
 
-    @ManyToMany(mappedBy = "users")
+    @ManyToMany(mappedBy = "users" ,cascade = CascadeType.ALL)
     private List<Conversation> conversationsByUserId;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user" ,cascade = CascadeType.ALL)
     private List<Token> tokens;
 
     @Override
