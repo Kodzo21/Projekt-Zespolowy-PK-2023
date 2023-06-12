@@ -23,7 +23,6 @@
       </ul>
       <div class="user-options-bar">
         <button class="add-user-button" (click)="openCreateGroup()" title="Utwórz grupę"><mat-icon>group_add</mat-icon></button>
-        <button class="add-user-button" (click)="openToAddFrined()" title="Dodaj znajomego do listy"><mat-icon>person_add</mat-icon></button>
         <button class="settings-button" (click)="openToSettings()" title="Ustawiena"> <mat-icon>settings</mat-icon></button>
         <button class="logout-button" (click)="logout()" title="Wyloguj się"><mat-icon>logout</mat-icon></button>
       </div>
@@ -31,7 +30,7 @@
 
     <div class="message-window">
       <div class="top-bar">
-        <label>Nazwa</label>
+        <label>{{getConversationNameById()}}</label>
         <button class="canvas-button" (click)="goToCanvas(currentConversation)" title="Przejdz do interaktywnej tablicy"><img src="/assets/images/whitboard_icon.svg"  width="35" height="35"> </button>
       </div>
       <div class="messages">

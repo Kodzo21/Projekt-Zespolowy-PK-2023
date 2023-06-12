@@ -2,7 +2,6 @@ import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
 import {Router} from "@angular/router";
 import {MatDialog} from "@angular/material/dialog";
 import {SettingsComponent} from "../settings/settings.component";
-import {AddUserComponent} from "../add-user/add-user.component";
 import {CreateGroupComponent} from "../create-group/create-group.component";
 import {Message} from "../_models/message";
 import {WebsocketService} from "../_services/websocket.service";
@@ -129,10 +128,6 @@ export class ChatComponent implements OnInit {
   }
 
   sendMessage(conversationId: number | null) {
-    // if (this.newMessage) {
-    //   this.messages.push({ sender: this.currentUser, text: this.newMessage });
-    //   this.newMessage = '';
-    // }
     let mess: Message = {
       sender: localStorage.getItem('id')!,
       text: this.newMessage,
@@ -147,14 +142,6 @@ export class ChatComponent implements OnInit {
   openToSettings() {
     const dialogRef = this.dialog.open(SettingsComponent, {
       width: '400px',
-      data: {} // Możesz przekazać dane do dialogu, jeśli jest to potrzebne
-    });
-  }
-
-  openToAddFrined() {
-    const dialogRef = this.dialog.open(AddUserComponent, {
-      width: '400px',
-      height: '220px',
       data: {} // Możesz przekazać dane do dialogu, jeśli jest to potrzebne
     });
   }
@@ -249,9 +236,8 @@ export class ChatComponent implements OnInit {
     if(currentConversationObj){
       users = currentConversationObj.participants;
     }
-
     if(users){
-      for (let i = 0; i < 2; i++) {
+      for (let i = 0; i < users.length; i++) {
         if(userId === users[i].id){
           return users[i].name;
         }
@@ -259,6 +245,19 @@ export class ChatComponent implements OnInit {
     }
 
     return "";
+  }
+
+  getConversationNameById():string
+  {
+    let conversation = this.conversations;
+    if(conversation){
+      for (let i = 0; i < conversation.length; i++) {
+        if (conversation[i].id === this.currentConversation) {
+          return conversation[i].name ? conversation[i].name : this.getOtherUserNameByConversation(conversation[i]);
+        }
+      }
+    }
+      return "Nazwa";
   }
 }
 
