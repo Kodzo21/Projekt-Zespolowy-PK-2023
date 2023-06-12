@@ -1,4 +1,4 @@
-import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
+import {ChangeDetectorRef, Component, OnInit,ElementRef, Renderer2} from '@angular/core';
 import {Router} from "@angular/router";
 import {MatDialog} from "@angular/material/dialog";
 import {SettingsComponent} from "../settings/settings.component";
@@ -40,7 +40,9 @@ export class ChatComponent implements OnInit {
               private changeDetectorRef: ChangeDetectorRef,
               private conversationService: ConversationService,
               private messageService: MessageService,
-              private authService: AuthService
+              private authService: AuthService,
+              private elementRef:ElementRef,
+              private renderer:Renderer2
   ) {
     this.userSearchControl.valueChanges.pipe(
       debounceTime(500),
@@ -109,7 +111,7 @@ export class ChatComponent implements OnInit {
       this.changeDetectorRef.detectChanges();
     }
     });
-
+  this.scrollToBottom();
 
   }
 
@@ -145,6 +147,7 @@ export class ChatComponent implements OnInit {
     }
     this.webSocketService.sendMessage(mess);
     this.newMessage='';
+    this.scrollToBottom();
   }
 
   openToSettings() {
@@ -269,5 +272,19 @@ export class ChatComponent implements OnInit {
     }
       return "Nazwa";
   }
-}
 
+  onKeyDown(event: KeyboardEvent) {
+    if (event.key === 'Enter') {
+      event.preventDefault();
+      this.sendMessage(this.currentConversation);
+    }
+  }
+
+
+  scrollToBottom(): void {
+    const chatContainer = this.elementRef.nativeElement.querySelector('.chat-container');
+    if (chatContainer) {
+      this.renderer.setProperty(chatContainer, 'scrollBottom', chatContainer.scrollHeight);
+    }
+  }
+}
