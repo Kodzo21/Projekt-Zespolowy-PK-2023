@@ -13,6 +13,7 @@ export class SettingsComponent {
   currentPassword: string ='';
   newEmail: string = '';
 
+
   messageEmail:string|undefined;
   messagePassword:string|undefined;
   messageDelete:string|undefined;

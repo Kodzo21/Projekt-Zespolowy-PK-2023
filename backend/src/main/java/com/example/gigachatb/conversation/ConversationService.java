@@ -51,10 +51,9 @@ public class ConversationService {
 
     public ConversationResponse createConversation(ConversationRequest conversationRequest) {
         var conversationMapper = new ConversationMapper(userService, new UserMapper());
-        return  conversationMapper.apply(
-                conversationRepository.save(Conversation.builder()
-                .users(userService.getUsersByUniqueID(conversationRequest.getParticipants()))
-                .build()));
+        var conversation = conversationMapper.mapConversationRequest(conversationRequest);
+        conversationRepository.save(conversation);
+        return conversationMapper.apply(conversation);
     }
 
     public Conversation getConversationById(int conversation) {
