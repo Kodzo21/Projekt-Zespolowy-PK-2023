@@ -78,8 +78,8 @@ export class CanvasComponent implements AfterViewInit {
     this.context.clearRect(0, 0, this.canvas.nativeElement.width, this.canvas.nativeElement.height);
     this.drawLine = false;
     this.erase = false;
+    this.context.globalCompositeOperation = "source-over";
     this.saveData();
-    console.log(this.data);
     this.sendCanvasDataOnTimeout(this.defaultTimeout);
   }
 
@@ -137,12 +137,6 @@ export class CanvasComponent implements AfterViewInit {
 
     // start our drawing path
     this.context.beginPath();
-
-    if (this.erase) {
-      this.context.globalCompositeOperation = "destination-out";
-    } else {
-      this.context.globalCompositeOperation = "source-over";
-    }
 
     // we're drawing lines so we need a previous position
     if (prevPos) {
@@ -207,10 +201,13 @@ export class CanvasComponent implements AfterViewInit {
   public changeLineDrawing() {
     this.drawLine = !this.drawLine;
     this.erase = false;
+    this.context.globalCompositeOperation = "source-over";
   }
 
   public changeEraseMode() {
-    this.erase = !this.erase;
+
+    this.changeErase();
+
     this.drawLine = false;
   }
 
@@ -260,14 +257,31 @@ export class CanvasComponent implements AfterViewInit {
     const image = new Image();
     const ctx = this.context;
 
+    this.context.globalCompositeOperation = "source-over";
+
     ctx.clearRect(0, 0, this.canvas.nativeElement.width, this.canvas.nativeElement.height);
 
+    const root = this;
     image.onload = function () {
       ctx.drawImage(image, 0, 0);
+      if(root.erase){
+        root.context.globalCompositeOperation = "destination-out";
+      }
     }
 
     if (this.data) {
       image.src = this.data;
     }
+  }
+
+  private changeErase(){
+    this.erase = !this.erase;
+
+    if(this.erase){
+      this.context.globalCompositeOperation = "destination-out";
+    } else{
+      this.context.globalCompositeOperation = "source-over";
+    }
+
   }
 }
