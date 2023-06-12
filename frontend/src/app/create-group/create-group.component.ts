@@ -1,12 +1,13 @@
-import { Component } from '@angular/core';
+import {Component, Inject} from '@angular/core';
 import {Conversation} from "../_models/Conversation";
 import {UserService} from "../_services/user.service";
 import {ConversationService} from "../_services/conversation.service";
 import {FormControl} from "@angular/forms";
-import {debounceTime} from "rxjs";
+import {BehaviorSubject, debounceTime} from "rxjs";
 import {UserSelect} from "../_models/userSelect";
 import {ChatUser} from "../_models/ChatUser";
 import {GroupRequest} from "../_models/GroupRequest";
+import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material/dialog";
 
 @Component({
   selector: 'app-create-group',
@@ -22,7 +23,9 @@ export class CreateGroupComponent {
   userSearchControl: FormControl<string> = new FormControl();
 
   constructor(private userService:UserService
-  ,private conversationService:ConversationService
+  ,private conversationService:ConversationService,
+  @Inject(MAT_DIALOG_DATA) public data:any,
+              public matDialogRef:MatDialogRef<CreateGroupComponent>
   ) {
     this.userSearchControl.valueChanges.pipe(
       debounceTime(500),
@@ -47,20 +50,23 @@ export class CreateGroupComponent {
   }
 
   createGroup() {
-    //#todo dorobic na backend
-    // Tworzenie grupy na podstawie zaznaczonych użytkowników
-    // Możesz zaimplementować odpowiednią logikę tutaj
 
     let conversation: GroupRequest = {
       name: this.name,
       participants: this.selectedUsers.map(u => u.id),
     }
     if (conversation.participants.length > 2) {
+
+      let behav : BehaviorSubject<Conversation>  = this.data.obsNum;
+
       this.conversationService.createConversation(conversation).subscribe(response => {
-          console.log(response);
+          behav.next(response);
         }
       );
+      this.matDialogRef.close();
     }
+
+
   }
 
   selectUser(value: string) {

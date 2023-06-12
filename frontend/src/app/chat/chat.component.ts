@@ -7,7 +7,7 @@ import {Message} from "../_models/message";
 import {WebsocketService} from "../_services/websocket.service";
 import {ChatUser} from "../_models/ChatUser";
 import {UserService} from "../_services/user.service";
-import {debounceTime} from "rxjs";
+import {BehaviorSubject, debounceTime} from "rxjs";
 import {FormControl} from "@angular/forms";
 import {ConversationService} from "../_services/conversation.service";
 import {Conversation} from "../_models/Conversation";
@@ -25,7 +25,7 @@ export class ChatComponent implements OnInit {
 
   filteredUsers: ChatUser[] = [];
   loggedUser?: ChatUser;
-
+  num :BehaviorSubject<Conversation> = new BehaviorSubject<Conversation>({} as Conversation);
   currentConversation: number = 0;
   currentUser: string = '';
 
@@ -45,12 +45,20 @@ export class ChatComponent implements OnInit {
     this.userSearchControl.valueChanges.pipe(
       debounceTime(500),
     ).subscribe(searchTerm => {
-      this.searchUsers(searchTerm);
+      console.log(searchTerm);
+      this.searchUsers(searchTerm.replace("#","%23"));
     })
 
   }
 
   ngOnInit() {
+    this.num.subscribe(conversation => {
+      this.messageService.getMessages(conversation.id).subscribe(messageList => {
+        conversation.messages = messageList;
+      });
+      this.conversations.push(conversation);
+      this.changeDetectorRef.detectChanges();
+    });
     this.conversationService.getConversations().subscribe(response => {
 
       console.log(response);
@@ -158,7 +166,9 @@ export class ChatComponent implements OnInit {
     const dialogRef = this.dialog.open(CreateGroupComponent, {
       width: '400px',
       height: '350px',
-      data: {} // Możesz przekazać dane do dialogu, jeśli jest to potrzebne
+      data: {
+        obsNum: this.num,
+      } // Możesz przekazać dane do dialogu, jeśli jest to potrzebne
     });
   }
 
