@@ -40,7 +40,6 @@ export class CanvasComponent implements AfterViewInit {
   constructor(
     private webSocketService: WebsocketService,
     private router: Router,
-    private sanitizer: DomSanitizer
   ) {
     this.conversationId = this.router.getCurrentNavigation()?.extras?.state?.['conversationId'];
 
@@ -77,14 +76,7 @@ export class CanvasComponent implements AfterViewInit {
 
 
     //repeat every 1 sec
-    setInterval(function () {
-      root.sendData();
-    }, 1000);
   }
-
-
-
-
 
 
   public clearCanvas() {
@@ -169,9 +161,14 @@ export class CanvasComponent implements AfterViewInit {
       const root = this;
       if (root.timeout) clearTimeout(root.timeout);
 
-
+      setInterval(function () {
+        root.sendData();
+      }, 2000);
     }
+
+
   }
+
 
   private drawLineOnCanvas(
     prevPos: { x: number, y: number },
@@ -245,29 +242,28 @@ export class CanvasComponent implements AfterViewInit {
     this.saveData();
     if (this.data) {
 
-        let canvas: Canvas = {
-          conversation: this.conversationId,
-          data: this.data,
-        }
-        this.webSocketService.sendCanvas(canvas);
+      let canvas: Canvas = {
+        conversation: this.conversationId,
+        data: this.data,
       }
+      this.webSocketService.sendCanvas(canvas);
     }
-
-
-
-  public saveData(){
-    this.data = this.canvas.nativeElement.toDataURL("image/png",1.0);
   }
 
-  public loadData(){
+
+  public saveData() {
+    this.data = this.canvas.nativeElement.toDataURL("image/png", 1.0);
+  }
+
+  public loadData() {
     const image = new Image();
     const ctx = this.context;
 
-    image.onload = function (){
-      ctx.drawImage(image,0,0);
+    image.onload = function () {
+      ctx.drawImage(image, 0, 0);
     }
 
-    if(this.data){
+    if (this.data) {
       image.src = this.data;
     }
   }
