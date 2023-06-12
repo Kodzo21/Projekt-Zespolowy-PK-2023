@@ -9,6 +9,7 @@
       <mat-form-field>
         <input matInput placeholder="Nowy email" [(ngModel)]="newEmail" name="newEmail" required>
       </mat-form-field>
+      {{messageEmail}}
       <button mat-raised-button color="primary" (click)="changeEmail()">Zmień email</button>
     </form>
   </mat-expansion-panel>
@@ -26,6 +27,7 @@
       <mat-form-field>
         <input matInput type="password" placeholder="Nowe hasło" [(ngModel)]="newPassword" name="newPassword" required>
       </mat-form-field>
+      {{messagePassword}}
       <button mat-raised-button color="primary" (click)="changePassword()">Zmień hasło</button>
     </form>
   </mat-expansion-panel>
@@ -38,6 +40,7 @@
     </mat-expansion-panel-header>
     <div>
       <p>Czy na pewno chcesz usunąć swoje konto? Ta operacja jest nieodwracalna.</p>
+      {{messageDelete}}
       <button mat-raised-button color="warn" (click)="deleteAccount()">Usuń konto</button>
     </div>
   </mat-expansion-panel>

@@ -2,7 +2,6 @@ import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
 import {Router} from "@angular/router";
 import {MatDialog} from "@angular/material/dialog";
 import {SettingsComponent} from "../settings/settings.component";
-import {AddUserComponent} from "../add-user/add-user.component";
 import {CreateGroupComponent} from "../create-group/create-group.component";
 import {Message} from "../_models/message";
 import {WebsocketService} from "../_services/websocket.service";
@@ -130,10 +129,6 @@ export class ChatComponent implements OnInit {
   }
 
   sendMessage(conversationId: number | null) {
-    // if (this.newMessage) {
-    //   this.messages.push({ sender: this.currentUser, text: this.newMessage });
-    //   this.newMessage = '';
-    // }
     let mess: Message = {
       sender: localStorage.getItem('id')!,
       text: this.newMessage,
@@ -148,14 +143,6 @@ export class ChatComponent implements OnInit {
   openToSettings() {
     const dialogRef = this.dialog.open(SettingsComponent, {
       width: '400px',
-      data: {} // Możesz przekazać dane do dialogu, jeśli jest to potrzebne
-    });
-  }
-
-  openToAddFrined() {
-    const dialogRef = this.dialog.open(AddUserComponent, {
-      width: '400px',
-      height: '220px',
       data: {} // Możesz przekazać dane do dialogu, jeśli jest to potrzebne
     });
   }
