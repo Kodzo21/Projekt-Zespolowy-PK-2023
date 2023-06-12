@@ -3,7 +3,7 @@ import {Conversation} from "../_models/Conversation";
 import {UserService} from "../_services/user.service";
 import {ConversationService} from "../_services/conversation.service";
 import {FormControl} from "@angular/forms";
-import {BehaviorSubject, debounceTime, Observable} from "rxjs";
+import {BehaviorSubject, debounceTime} from "rxjs";
 import {UserSelect} from "../_models/userSelect";
 import {ChatUser} from "../_models/ChatUser";
 import {GroupRequest} from "../_models/GroupRequest";
@@ -50,9 +50,6 @@ export class CreateGroupComponent {
   }
 
   createGroup() {
-    //#todo dorobic na backend
-    // Tworzenie grupy na podstawie zaznaczonych użytkowników
-    // Możesz zaimplementować odpowiednią logikę tutaj
 
     let conversation: GroupRequest = {
       name: this.name,

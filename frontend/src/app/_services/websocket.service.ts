@@ -2,10 +2,8 @@ import {Injectable} from '@angular/core';
 import {Client} from "@stomp/stompjs";
 import * as SockJS from 'sockjs-client';
 import {Message} from "../_models/message";
-import {BehaviorSubject, Observable, of} from "rxjs";
-import {Conversation} from "../_models/Conversation";
+import {BehaviorSubject} from "rxjs";
 import {Canvas} from "../_models/canvas";
-import {WebSocketSubject} from "rxjs/internal/observable/dom/WebSocketSubject";
 
 @Injectable({
   providedIn: 'root'
@@ -29,9 +27,6 @@ export class WebsocketService {
   }
 
   sendCanvas(canvas: Canvas) {
-    console.log(canvas);
-    //print size of object in bytes
-    console.log(JSON.stringify(canvas).length);
     try {
       this.stompClient.publish({destination: "/app/canvas", body: JSON.stringify(canvas)});
     } catch (e) {
@@ -48,17 +43,12 @@ export class WebsocketService {
     //initialize websocket connection
 
     const socket = new SockJS("http://localhost:8080/ws");
-    console.log("connecting to websocket");
     // @ts-ignore
     this.stompClient.webSocketFactory = () => socket;
     this.stompClient.splitLargeFrames = true;
     this.stompClient.onConnect = (frame) => {
-      console.log("connected to websocket");
       this.stompClient.subscribe("/topic/messages/" + uniqueId, (message) => {
-        console.log(JSON.parse(message.body));
-        console.log('received message');
         let mess: Message = JSON.parse(message.body);
-        console.log(mess);
         this.messagesSubj.next(this.messagesSubj.getValue().set(mess.conversation!, mess));
       });
 
