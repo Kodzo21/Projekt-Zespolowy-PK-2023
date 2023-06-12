@@ -2,7 +2,6 @@ import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
 import {Router} from "@angular/router";
 import {MatDialog} from "@angular/material/dialog";
 import {SettingsComponent} from "../settings/settings.component";
-import {AddUserComponent} from "../add-user/add-user.component";
 import {CreateGroupComponent} from "../create-group/create-group.component";
 import {Message} from "../_models/message";
 import {WebsocketService} from "../_services/websocket.service";
@@ -78,7 +77,6 @@ export class ChatComponent implements OnInit {
       })
     });
 
-    //todo: do rozkminienia czemu w to nie wchodzi
     this.webSocketService.messagesSubj.subscribe(message => {
       let flag = false;
       this.conversations.forEach(conversation => {
@@ -130,10 +128,6 @@ export class ChatComponent implements OnInit {
   }
 
   sendMessage(conversationId: number | null) {
-    // if (this.newMessage) {
-    //   this.messages.push({ sender: this.currentUser, text: this.newMessage });
-    //   this.newMessage = '';
-    // }
     let mess: Message = {
       sender: localStorage.getItem('id')!,
       text: this.newMessage,
@@ -148,14 +142,6 @@ export class ChatComponent implements OnInit {
   openToSettings() {
     const dialogRef = this.dialog.open(SettingsComponent, {
       width: '400px',
-      data: {} // Możesz przekazać dane do dialogu, jeśli jest to potrzebne
-    });
-  }
-
-  openToAddFrined() {
-    const dialogRef = this.dialog.open(AddUserComponent, {
-      width: '400px',
-      height: '220px',
       data: {} // Możesz przekazać dane do dialogu, jeśli jest to potrzebne
     });
   }
@@ -184,19 +170,23 @@ export class ChatComponent implements OnInit {
   }
 
   getOtherUserNameByConversation(conversation: Conversation){
-    let users = conversation.participants;
-    let otherUser;
-    if(users && users.length == 2){
-      if(users[0].id==localStorage.getItem("id")){
-        otherUser = users[1];
-      } else{
-        otherUser = users[0];
+    if (conversation.name==null || conversation.name=="" || conversation.name==undefined) {
+      let users = conversation.participants;
+      let otherUser;
+      if (users && users.length == 2) {
+        if (users[0].id == localStorage.getItem("id")) {
+          otherUser = users[1];
+        } else {
+          otherUser = users[0];
+        }
       }
+      if (otherUser) {
+        return otherUser.name;
+      }
+      return "error 500, no user found";
+    } else {
+      return conversation.name;
     }
-    if(otherUser){
-      return otherUser.name;
-    }
-    return "error 500, no user found";
   }
 
   getLoggedUserName(){

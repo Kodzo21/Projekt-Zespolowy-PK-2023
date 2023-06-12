@@ -29,6 +29,7 @@ public class ConversationController {
 
     @PostMapping("/create")
     public ConversationResponse createConversation(@RequestBody ConversationRequest conversationRequest) {
+        log.info(conversationRequest.toString());
         return conversationService.createConversation(conversationRequest);
     }
 
