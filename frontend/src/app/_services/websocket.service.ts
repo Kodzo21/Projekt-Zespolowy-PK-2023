@@ -16,7 +16,7 @@ export class WebsocketService {
 
   private stompClient: Client;
   messagesSubj : BehaviorSubject<Map<number, Message>> = new BehaviorSubject<Map<number, Message>>(new Map<number, Message>());
-  canvasMap: BehaviorSubject<Map<number,ArrayBuffer>> = new BehaviorSubject<Map<number,ArrayBuffer>>(new Map<number,ArrayBuffer>());
+  canvasMap: BehaviorSubject<Map<number,string>> = new BehaviorSubject<Map<number,string>>(new Map<number,string>());
 
   constructor() {
     this.stompClient = new Client()
@@ -51,6 +51,7 @@ export class WebsocketService {
     console.log("connecting to websocket");
     // @ts-ignore
     this.stompClient.webSocketFactory = () => socket;
+    this.stompClient.splitLargeFrames = true;
     this.stompClient.onConnect = (frame) => {
       console.log("connected to websocket");
       this.stompClient.subscribe("/topic/messages/" + uniqueId, (message) => {
@@ -66,7 +67,6 @@ export class WebsocketService {
         this.canvasMap.next(this.canvasMap.getValue().set(canv.conversation, canv.data));
       });
     };
-
 
 
     this.stompClient.activate();

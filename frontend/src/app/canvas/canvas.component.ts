@@ -1,7 +1,8 @@
-import {AfterViewInit,  Component, ElementRef, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, ElementRef, ViewChild} from '@angular/core';
 import {WebsocketService} from "../_services/websocket.service";
 import {Canvas} from "../_models/canvas";
 import {Router} from "@angular/router";
+import {DomSanitizer} from "@angular/platform-browser";
 
 @Component({
   selector: 'app-canvas',
@@ -20,7 +21,8 @@ export class CanvasComponent implements AfterViewInit {
 
   private prevPos!: {
     x: number,
-    y: number }
+    y: number
+  }
 
   private paint: boolean = false;
 
@@ -29,7 +31,7 @@ export class CanvasComponent implements AfterViewInit {
 
   public backgroundURL: string = "/assets/images/No_image.svg";
 
-  private data: string|undefined ="";
+  private data: string | undefined = undefined;
 
   private timeout: number = 0;
 
@@ -37,13 +39,13 @@ export class CanvasComponent implements AfterViewInit {
 
   constructor(
     private webSocketService: WebsocketService,
-    private router : Router
+    private router: Router,
   ) {
-      this.conversationId = this.router.getCurrentNavigation()?.extras?.state?.['conversationId'];
+    this.conversationId = this.router.getCurrentNavigation()?.extras?.state?.['conversationId'];
 
-      if(!this.conversationId){
-        this.conversationId = -1;
-      }
+    if (!this.conversationId) {
+      this.conversationId = -1;
+    }
   }
 
   ngAfterViewInit(): void {
@@ -61,13 +63,21 @@ export class CanvasComponent implements AfterViewInit {
     this.context.lineJoin = 'round';
     this.context.strokeStyle = "rgba(0, 0, 0, 1)";
 
+    const root = this;
+
     //subscribe to webSocket and refresh canvas data any time they change
     this.webSocketService.canvasMap.subscribe(map => {
-      this.data = map.get(this.conversationId);
-      this.loadData();
-      console.log("data change - canvas");
-    })
+      if (map.get(this.conversationId) != undefined) {
+        this.data = map.get(this.conversationId)!
+        this.loadData();
+        console.log("data change");
+      }
+    });
+
+
+    //repeat every 1 sec
   }
+
 
   public clearCanvas() {
     this.context.clearRect(0, 0, this.canvas.nativeElement.width, this.canvas.nativeElement.height);
@@ -77,9 +87,9 @@ export class CanvasComponent implements AfterViewInit {
 
   public releaseEventHandler = (e: MouseEvent | TouchEvent) => {
 
-    if(this.drawLine){
+    if (this.drawLine) {
       const currentPos = this.mousePosition(e);
-      this.drawLineOnCanvas(this.prevPos,currentPos);
+      this.drawLineOnCanvas(this.prevPos, currentPos);
     }
     this.paint = false;
   }
@@ -94,8 +104,8 @@ export class CanvasComponent implements AfterViewInit {
 
     this.prevPos = currentPos;
     this.paint = true;
-    if(!this.drawLine){
-      this.drawOnCanvas(this.prevPos,currentPos);
+    if (!this.drawLine) {
+      this.drawOnCanvas(this.prevPos, currentPos);
     }
   }
 
@@ -103,8 +113,8 @@ export class CanvasComponent implements AfterViewInit {
 
     const currentPos = this.mousePosition(e);
 
-    if(this.paint && !this.drawLine){
-      this.drawOnCanvas(this.prevPos,currentPos);
+    if (this.paint && !this.drawLine) {
+      this.drawOnCanvas(this.prevPos, currentPos);
       this.prevPos = currentPos;
     }
     e.preventDefault();
@@ -121,19 +131,19 @@ export class CanvasComponent implements AfterViewInit {
   private drawOnCanvas(
     prevPos: { x: number, y: number },
     currentPos: { x: number, y: number }
-  )
-  {
+  ) {
     // in case the context is not set
-    if (!this.context) { return; }
+    if (!this.context) {
+      return;
+    }
 
     // start our drawing path
     this.context.beginPath();
 
-    if(this.erase){
-      this.context.globalCompositeOperation="destination-out";
-    }
-    else{
-      this.context.globalCompositeOperation="source-over";
+    if (this.erase) {
+      this.context.globalCompositeOperation = "destination-out";
+    } else {
+      this.context.globalCompositeOperation = "source-over";
     }
 
     // we're drawing lines so we need a previous position
@@ -149,32 +159,25 @@ export class CanvasComponent implements AfterViewInit {
       this.context.stroke();
 
       const root = this;
-      if(root.timeout) clearTimeout(root.timeout);
+      if (root.timeout) clearTimeout(root.timeout);
 
-      this.timeout = setTimeout(function (){
-        root.saveData();
-
-        if(root.data){
-          let canvas :Canvas= {
-            conversation: root.conversationId,
-            data: root.data
-          }
-          root.webSocketService.sendCanvas(canvas);
-        }
-
-
-        console.log("data send - canvas");
-      },1000);
+      setInterval(function () {
+        root.sendData();
+      }, 2000);
     }
+
+
   }
+
 
   private drawLineOnCanvas(
     prevPos: { x: number, y: number },
     currentPos: { x: number, y: number }
-  )
-  {
+  ) {
     // in case the context is not set
-    if (!this.context) { return; }
+    if (!this.context) {
+      return;
+    }
 
     // start our drawing path
     this.context.beginPath();
@@ -193,13 +196,13 @@ export class CanvasComponent implements AfterViewInit {
     }
   }
 
-  private mousePosition = (e: MouseEvent | TouchEvent) =>{
+  private mousePosition = (e: MouseEvent | TouchEvent) => {
     let mouseX = (e as MouseEvent).clientX;
     let mouseY = (e as MouseEvent).clientY;
 
     let offSet = this.canvas.nativeElement.getBoundingClientRect();
-    mouseX = (mouseX - offSet.left)/(offSet.right - offSet.left) * this.width;
-    mouseY = (mouseY - offSet.top)/(offSet.bottom - offSet.top) * this.height;
+    mouseX = (mouseX - offSet.left) / (offSet.right - offSet.left) * this.width;
+    mouseY = (mouseY - offSet.top) / (offSet.bottom - offSet.top) * this.height;
 
     return {
       x: mouseX,
@@ -208,12 +211,12 @@ export class CanvasComponent implements AfterViewInit {
   }
 
 
-  public changeLineDrawing(){
+  public changeLineDrawing() {
     this.drawLine = !this.drawLine;
     this.erase = false;
   }
 
-  public changeEraseMode(){
+  public changeEraseMode() {
     this.erase = !this.erase;
     this.drawLine = false;
   }
@@ -221,11 +224,11 @@ export class CanvasComponent implements AfterViewInit {
   public pickImage(event: Event) {
     let files, url;
 
-    if(event){
+    if (event) {
       files = (event.target as HTMLInputElement).files;
     }
 
-    if(files && files.item(0)){
+    if (files && files.item(0)) {
       url = window.URL.createObjectURL(files[0]);
       this.backgroundURL = url;
     }
@@ -235,21 +238,32 @@ export class CanvasComponent implements AfterViewInit {
     this.backgroundURL = "/assets/images/No_image.svg";
   }
 
-  public saveData(){
-    this.data = this.canvas.nativeElement.toDataURL("image/png",1.0);
+  public sendData() {
+    this.saveData();
+    if (this.data) {
+
+      let canvas: Canvas = {
+        conversation: this.conversationId,
+        data: this.data,
+      }
+      this.webSocketService.sendCanvas(canvas);
+    }
   }
 
-  public loadData(){
+
+  public saveData() {
+    this.data = this.canvas.nativeElement.toDataURL("image/png", 1.0);
+  }
+
+  public loadData() {
     const image = new Image();
     const ctx = this.context;
 
-    image.onload = function (){
-      ctx.drawImage(image,0,0);
+    image.onload = function () {
+      ctx.drawImage(image, 0, 0);
     }
 
-    console.log("data load - canvas");
-
-    if(this.data){
+    if (this.data) {
       image.src = this.data;
     }
   }
