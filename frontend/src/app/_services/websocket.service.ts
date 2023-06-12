@@ -68,7 +68,6 @@ export class WebsocketService {
       });
     };
 
-
     this.stompClient.activate();
   }
 

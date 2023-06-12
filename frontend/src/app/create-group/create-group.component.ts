@@ -1,4 +1,12 @@
 import { Component } from '@angular/core';
+import {Conversation} from "../_models/Conversation";
+import {UserService} from "../_services/user.service";
+import {ConversationService} from "../_services/conversation.service";
+import {FormControl} from "@angular/forms";
+import {debounceTime} from "rxjs";
+import {UserSelect} from "../_models/userSelect";
+import {ChatUser} from "../_models/ChatUser";
+import {GroupRequest} from "../_models/GroupRequest";
 
 @Component({
   selector: 'app-create-group',
@@ -6,23 +14,35 @@ import { Component } from '@angular/core';
   styleUrls: ['./create-group.component.css']
 })
 export class CreateGroupComponent {
-  users = [
-    { name: 'User 1', selected: false },
-    { name: 'User 2', selected: false },
-    { name: 'User 3', selected: false }
-  ];
 
-  selectedUsers: any[] = [];
+  filteredUser : UserSelect={} as UserSelect;
+  selectedUsers: UserSelect[]  = [];
+  filteredUsers: ChatUser[] = [];
+  name: string = '';
+  userSearchControl: FormControl<string> = new FormControl();
 
-  toggleUserSelection(user: any) {
+  constructor(private userService:UserService
+  ,private conversationService:ConversationService
+  ) {
+    this.userSearchControl.valueChanges.pipe(
+      debounceTime(500),
+    ).subscribe(searchTerm => {
+      this.searchUsers(searchTerm);
+    })
+  }
+
+
+  toggleUserSelection(user: UserSelect) {
     user.selected = !user.selected;
-
     if (user.selected) {
-      this.selectedUsers.push(user);
+      let x: UserSelect = {
+        id: user.id,
+        name: user.name,
+        selected: user.selected
+      }
+      this.selectedUsers.push(x);
     } else {
-      this.selectedUsers = this.selectedUsers.filter(
-        (selectedUser) => selectedUser !== user
-      );
+      this.selectedUsers = this.selectedUsers.filter(u => u.id !== user.id);
     }
   }
 
@@ -30,6 +50,33 @@ export class CreateGroupComponent {
     //#todo dorobic na backend
     // Tworzenie grupy na podstawie zaznaczonych użytkowników
     // Możesz zaimplementować odpowiednią logikę tutaj
-    console.log('Zaznaczeni użytkownicy:', this.selectedUsers);
+
+    let conversation: GroupRequest = {
+      name: this.name,
+      participants: this.selectedUsers.map(u => u.id),
+    }
+    if (conversation.participants.length > 2) {
+      this.conversationService.createConversation(conversation).subscribe(response => {
+          console.log(response);
+        }
+      );
+    }
+  }
+
+  selectUser(value: string) {
+    let name = value.split('/')[0];
+    let id = value.split('/')[1];
+    this.filteredUser.name = name
+    this.filteredUser.id = id;
+    this.filteredUser.selected = false;
+    this.toggleUserSelection(this.filteredUser);
+  }
+
+  searchUsers(searchTerm: string) {
+    if (searchTerm != null && searchTerm.length > 1)
+      this.userService.getFilteredUsers(searchTerm).subscribe(response => {
+          this.filteredUsers = response;
+        }
+      );
   }
 }

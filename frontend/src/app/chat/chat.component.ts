@@ -78,7 +78,6 @@ export class ChatComponent implements OnInit {
       })
     });
 
-    //todo: do rozkminienia czemu w to nie wchodzi
     this.webSocketService.messagesSubj.subscribe(message => {
       let flag = false;
       this.conversations.forEach(conversation => {
@@ -184,19 +183,23 @@ export class ChatComponent implements OnInit {
   }
 
   getOtherUserNameByConversation(conversation: Conversation){
-    let users = conversation.participants;
-    let otherUser;
-    if(users && users.length == 2){
-      if(users[0].id==localStorage.getItem("id")){
-        otherUser = users[1];
-      } else{
-        otherUser = users[0];
+    if (conversation.name==null || conversation.name=="" || conversation.name==undefined) {
+      let users = conversation.participants;
+      let otherUser;
+      if (users && users.length == 2) {
+        if (users[0].id == localStorage.getItem("id")) {
+          otherUser = users[1];
+        } else {
+          otherUser = users[0];
+        }
       }
+      if (otherUser) {
+        return otherUser.name;
+      }
+      return "error 500, no user found";
+    } else {
+      return conversation.name;
     }
-    if(otherUser){
-      return otherUser.name;
-    }
-    return "error 500, no user found";
   }
 
   getLoggedUserName(){

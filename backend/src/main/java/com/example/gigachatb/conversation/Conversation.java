@@ -26,6 +26,10 @@ public class Conversation {
     @Column(name = "start_time")
     private Timestamp startTime;
 
+    @Basic
+    @Column(name = "name")
+    private String name;
+
     @OneToMany(mappedBy = "conversationByConversationId")
     private List<File> filesByConversationId;
     @OneToMany(mappedBy = "conversationByConversationId")

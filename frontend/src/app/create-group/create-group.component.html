@@ -1,14 +1,27 @@
 <h2>Utwórz grupe</h2>
 <form>
   <mat-form-field>
-    <input matInput placeholder="Group name">
+    <input matInput placeholder="Group name"  [(ngModel)]="this.name"  name="group_name">
+
+
   </mat-form-field>
+  <mat-form-field class="search-user">
+
+    <input matInput type="text" placeholder="Search users" [formControl]="userSearchControl" [matAutocomplete]="auto" >
+    <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selectUser($event.option.value)">
+      <mat-option *ngFor="let user of filteredUsers " [value]="user.name +'/'+ user.id"  >
+        {{ user.name }}   {{ user.id }}
+      </mat-option>
+    </mat-autocomplete>
+  </mat-form-field>
+
   <div class="user-list">
     <ul>
-      <li *ngFor="let user of users" [class.selected]="user.selected" (click)="toggleUserSelection(user)">
+
+      <li *ngFor="let user of selectedUsers" [class.selected]="user.selected" (click)="toggleUserSelection(user) ">
         <mat-checkbox
           [(ngModel)]="user.selected" color="primary" [ngModelOptions]="{ standalone: true }"></mat-checkbox>
-        {{ user.name }}
+        {{ user.name }}// {{ user.id }}
       </li>
     </ul>
   </div>
