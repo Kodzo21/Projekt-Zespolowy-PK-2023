@@ -23,7 +23,6 @@ public class CanvasSocket {
     @SendTo("/topic/canvas")
     @MessageMapping("/canvas")
     public void sendCanvas(CanvasDTO canvasDTO) {
-        log.info("CanvasDTO: " + canvasDTO.toString());
         var userList = conversationService.getUsersUniqueIDByConversationId(canvasDTO.getConversation());
         try {
             for (String id : userList) {
