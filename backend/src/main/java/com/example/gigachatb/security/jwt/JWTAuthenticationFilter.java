@@ -37,7 +37,6 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
         final String jwtToken;
         final String email;
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-            log.info("JWT Token is missing");
             filterChain.doFilter(request, response);
             return;
         }
