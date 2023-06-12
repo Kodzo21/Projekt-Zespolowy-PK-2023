@@ -236,9 +236,8 @@ export class ChatComponent implements OnInit {
     if(currentConversationObj){
       users = currentConversationObj.participants;
     }
-
     if(users){
-      for (let i = 0; i < 2; i++) {
+      for (let i = 0; i < users.length; i++) {
         if(userId === users[i].id){
           return users[i].name;
         }
@@ -246,6 +245,19 @@ export class ChatComponent implements OnInit {
     }
 
     return "";
+  }
+
+  getConversationNameById():string
+  {
+    let conversation = this.conversations;
+    if(conversation){
+      for (let i = 0; i < conversation.length; i++) {
+        if (conversation[i].id === this.currentConversation) {
+          return conversation[i].name ? conversation[i].name : this.getOtherUserNameByConversation(conversation[i]);
+        }
+      }
+    }
+      return "Nazwa";
   }
 }
 
