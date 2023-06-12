@@ -13,6 +13,8 @@ export class SettingsComponent {
   currentPassword: string ='';
   newEmail: string = '';
 
+
+
   changeEmail() {
     // Logika zmiany maila
   }

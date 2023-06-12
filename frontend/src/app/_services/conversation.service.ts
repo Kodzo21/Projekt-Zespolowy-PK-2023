@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
-import {HttpClient} from "@angular/common/http";
+import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {Conversation} from "../_models/Conversation";
+import {GroupRequest} from "../_models/GroupRequest";
 
 @Injectable({
   providedIn: 'root'
@@ -17,5 +18,11 @@ export class ConversationService {
 
   getConversation(id: number) {
       return this.httpClient.get<Conversation>(this.url+id);
+  }
+
+  createConversation(conversation: GroupRequest) {
+    const headers = new HttpHeaders().set('Content-Type','application/json');
+
+    return this.httpClient.post<Conversation>(this.url+"create", conversation,{'headers':headers});
   }
 }

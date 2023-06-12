@@ -4,7 +4,6 @@ import com.example.gigachatb.user.User;
 import com.example.gigachatb.user.UserMapper;
 import com.example.gigachatb.user.UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.annotation.Bean;
 
 import java.util.List;
 import java.util.function.Function;
@@ -18,6 +17,7 @@ public class ConversationMapper implements Function<Conversation,ConversationRes
         var participants = conversation.getUsers().stream().map(User::getUniqueID).toList();
         return ConversationResponse.builder()
                 .id(conversation.getConversationId())
+                .name(conversation.getName())
                 .participants(userMapper.mapUsers(userService.getUsersByUniqueID(participants)))
                 .build();
     }
@@ -27,5 +27,13 @@ public class ConversationMapper implements Function<Conversation,ConversationRes
     }
 
 
-
+    public Conversation mapConversationRequest(ConversationRequest conversationRequest) {
+        var users = userService.getUsersByUniqueID(conversationRequest.getParticipants());
+        return Conversation.builder()
+                .name(conversationRequest.getName())
+                .users(users)
+                .filesByConversationId(List.of())
+                .messagesByConversationId(List.of())
+                .build();
+    }
 }
