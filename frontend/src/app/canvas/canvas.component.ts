@@ -2,7 +2,6 @@ import {AfterViewInit, Component, ElementRef, ViewChild} from '@angular/core';
 import {WebsocketService} from "../_services/websocket.service";
 import {Canvas} from "../_models/canvas";
 import {Router} from "@angular/router";
-import {DomSanitizer} from "@angular/platform-browser";
 
 @Component({
   selector: 'app-canvas',
@@ -26,8 +25,8 @@ export class CanvasComponent implements AfterViewInit {
 
   private paint: boolean = false;
 
-  private drawLine: boolean = false;
-  private erase: boolean = false;
+  drawLine: boolean = false;
+  erase: boolean = false;
 
   public backgroundURL: string = "/assets/images/No_image.svg";
 
@@ -36,6 +35,7 @@ export class CanvasComponent implements AfterViewInit {
   private timeout: number = 0;
 
   private readonly conversationId: number;
+  private defaultTimeout: number = 500;
 
   constructor(
     private webSocketService: WebsocketService,
@@ -63,8 +63,6 @@ export class CanvasComponent implements AfterViewInit {
     this.context.lineJoin = 'round';
     this.context.strokeStyle = "rgba(0, 0, 0, 1)";
 
-    const root = this;
-
     //subscribe to webSocket and refresh canvas data any time they change
     this.webSocketService.canvasMap.subscribe(map => {
       if (map.get(this.conversationId) != undefined) {
@@ -73,9 +71,6 @@ export class CanvasComponent implements AfterViewInit {
         console.log("data change");
       }
     });
-
-
-    //repeat every 1 sec
   }
 
 
@@ -83,6 +78,9 @@ export class CanvasComponent implements AfterViewInit {
     this.context.clearRect(0, 0, this.canvas.nativeElement.width, this.canvas.nativeElement.height);
     this.drawLine = false;
     this.erase = false;
+    this.saveData();
+    console.log(this.data);
+    this.sendCanvasDataOnTimeout(this.defaultTimeout);
   }
 
   public releaseEventHandler = (e: MouseEvent | TouchEvent) => {
@@ -158,15 +156,8 @@ export class CanvasComponent implements AfterViewInit {
       // strokes the current path with the styles we set earlier
       this.context.stroke();
 
-      const root = this;
-      if (root.timeout) clearTimeout(root.timeout);
-
-      setInterval(function () {
-        root.sendData();
-      }, 2000);
+      this.sendCanvasDataOnTimeout(this.defaultTimeout);
     }
-
-
   }
 
 
@@ -193,6 +184,8 @@ export class CanvasComponent implements AfterViewInit {
 
       // strokes the current path with the styles we set earlier
       this.context.stroke();
+
+      this.sendCanvasDataOnTimeout(this.defaultTimeout);
     }
   }
 
@@ -238,8 +231,7 @@ export class CanvasComponent implements AfterViewInit {
     this.backgroundURL = "/assets/images/No_image.svg";
   }
 
-  public sendData() {
-    this.saveData();
+  private sendData() {
     if (this.data) {
 
       let canvas: Canvas = {
@@ -250,14 +242,25 @@ export class CanvasComponent implements AfterViewInit {
     }
   }
 
+  private sendCanvasDataOnTimeout(timeout : number) {
+    const root = this;
+    if(root.timeout) clearTimeout(root.timeout);
 
-  public saveData() {
+    this.timeout = setTimeout(function (){
+      root.saveData();
+      root.sendData();
+    },timeout);
+  }
+
+  private saveData() {
     this.data = this.canvas.nativeElement.toDataURL("image/png", 1.0);
   }
 
-  public loadData() {
+  private loadData() {
     const image = new Image();
     const ctx = this.context;
+
+    ctx.clearRect(0, 0, this.canvas.nativeElement.width, this.canvas.nativeElement.height);
 
     image.onload = function () {
       ctx.drawImage(image, 0, 0);

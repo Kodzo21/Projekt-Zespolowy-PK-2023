@@ -3,11 +3,12 @@ import {Component, EventEmitter, Output} from '@angular/core';
 @Component({
   selector: 'app-line-width-picker',
   template: `
-    <input type="range" class="line-width-picker" id="line-width" min="1" max="50" [defaultValue]="3" #width (input)="pickLineWidth(width.value)">
-    <label for="line-width">Line Width {{ value }}</label>
+    <div class="line-width-picker-container">
+      <input type="range" class="form-range" min="1" max="50" id="line-width" [defaultValue]="3" #width (input)="pickLineWidth(width.value)">
+      <label for="line-width">Line Width: {{ value }}</label>
+    </div>
   `,
-  styles: [
-  ]
+  styleUrls: ['./line-width-picker.component.css']
 })
 export class LineWidthPickerComponent {
 

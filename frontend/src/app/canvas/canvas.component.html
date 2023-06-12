@@ -1,16 +1,13 @@
 <section class="vh-100 vw-100">
   <div class="container">
     <div class="interaction-container">
-      <app-color-picker (colorEvent)="pickColor($event)" />
-      <button (click)="clearCanvas()">CLEAR!</button>
-      <button (click)="clearBackground()">CLEAR BACKGROUND!</button>
-      <app-line-width-picker (widthEvent)="pickLineWidth($event)" />
-      <button type="button" class="btn btn-success" (click)="changeLineDrawing()">Line</button>
-      <button type="button" class="btn btn-success" (click)="changeEraseMode()">Erase</button>
-      <button type="button" class="btn btn-success" (click)="saveData()">Save</button>
-      <button type="button" class="btn btn-success" (click)="loadData()">Load</button>
-      <button type="button" class="btn btn-success" (click)="sendData()">Send</button>
-      <app-background-picker (imageEvent)="pickImage($event)" />
+      <app-color-picker (colorEvent)="pickColor($event)" class="app-color-picker" />
+      <button mat-raised-button color="primary" type="button" (click)="clearCanvas()" class="clear-button">Clear canvas</button>
+      <button mat-raised-button color="primary" type="button" (click)="clearBackground()" class="clear-background-button">Clear background</button>
+      <app-line-width-picker class="app-line-width-picker" (widthEvent)="pickLineWidth($event)" />
+      <button mat-raised-button color="primary" type="button" (click)="changeLineDrawing()" [ngStyle]="{'opacity': drawLine ? 0.7 : 1.5}" class="line-button">Line</button>
+      <button mat-raised-button color="primary" type="button" (click)="changeEraseMode()" [ngStyle]="{'opacity': erase ? 0.7 : 1}" class="erase-button">Erase</button>
+      <app-background-picker (imageEvent)="pickImage($event)" class="app-background-picker" />
     </div>
 
     <div class="board-container">
