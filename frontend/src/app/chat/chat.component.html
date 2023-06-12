@@ -3,6 +3,9 @@
 
   <div class="message-container">
     <div class="user-list">
+      <div  class="my-user-info">
+        <label>{{getLoggedUserName()+" " + localStorage.getItem("id")}}</label>
+      </div>
       <mat-form-field class="search-user">
 
         <input matInput type="text" placeholder="Search users" [formControl]="userSearchControl" [matAutocomplete]="auto" >
@@ -14,26 +17,26 @@
       </mat-form-field>
       <ul>
         <li *ngFor="let conversation of conversations;let i = index" (click)="selectConversation(conversation.id) " [ngStyle]="{'background-color': currentConversation===conversation.id ? '#e3f2fd' : ' #fafafa'}" >
-          {{ conversation.id
-          // ?user.name:user.users[1].name
-          }} / {{ conversation.id}}
+         <div class="sender-name">{{ getOtherUserNameByConversation(conversation)}}</div>
+          <div class="last-message-in-side-bar">{{ getLastMessageInSideBarByMessages(conversation.messages)}}</div>
         </li>
       </ul>
       <div class="user-options-bar">
-        <button class="add-user-button" (click)="openCreateGroup()"><mat-icon>group_add</mat-icon></button>
-        <button class="add-user-button" (click)="openToAddFrined()"><mat-icon>person_add</mat-icon></button>
-        <button class="settings-button" (click)="openToSettings()"> <mat-icon>settings</mat-icon></button>
-        <button class="logout-button" (click)="logout()"><mat-icon>logout</mat-icon></button>
+        <button class="add-user-button" (click)="openCreateGroup()" title="Utwórz grupę"><mat-icon>group_add</mat-icon></button>
+        <button class="add-user-button" (click)="openToAddFrined()" title="Dodaj znajomego do listy"><mat-icon>person_add</mat-icon></button>
+        <button class="settings-button" (click)="openToSettings()" title="Ustawiena"> <mat-icon>settings</mat-icon></button>
+        <button class="logout-button" (click)="logout()" title="Wyloguj się"><mat-icon>logout</mat-icon></button>
       </div>
     </div>
 
     <div class="message-window">
       <div class="top-bar">
-        <button class="canvas-button" (click)="goToCanvas(currentConversation)"><mat-icon>mode_edit</mat-icon></button>
+        <label>Nazwa</label>
+        <button class="canvas-button" (click)="goToCanvas(currentConversation)" title="Przejdz do interaktywnej tablicy"><img src="/assets/images/whitboard_icon.svg"  width="35" height="35"> </button>
       </div>
       <div class="messages">
-        <div *ngFor="let message of getMessages()" class="message" [ngClass]="{'my-message': message.sender === localStorage.getItem('id')}">
-          <span>{{ message.sender }}:</span>
+        <div *ngFor="let message of getMessages()" class="message" [ngClass]="{'my-message': message.sender === localStorage.getItem('id'),'other-message': message.sender !== localStorage.getItem('id')}">
+          <span>{{ getNameById(message.sender)}}</span>
           <p>{{ message.text }}</p>
         </div>
       </div>

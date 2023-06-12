@@ -25,12 +25,15 @@ export class ChatComponent implements OnInit {
   userSearchControl: FormControl<string> = new FormControl();
 
   filteredUsers: ChatUser[] = [];
+  loggedUser?: ChatUser;
 
   currentConversation: number = 0;
   currentUser: string = '';
+
   newMessage: string = '';
 
   conversations: Conversation[] = [];
+
 
   constructor(private router: Router, private dialog: MatDialog,
               private webSocketService: WebsocketService,
@@ -50,6 +53,7 @@ export class ChatComponent implements OnInit {
 
   ngOnInit() {
     this.conversationService.getConversations().subscribe(response => {
+
       console.log(response);
 
       response.map(conversation => {
@@ -59,10 +63,20 @@ export class ChatComponent implements OnInit {
         });
         this.conversations.push(conversation);
       })
+
+
+
       this.changeDetectorRef.detectChanges();
 
     });
 
+    this.userService.getUsers().subscribe(response => {
+      response.forEach(user => {
+        if(user.id === localStorage.getItem("id")){
+          this.loggedUser = user;
+        }
+      })
+    });
 
     //todo: do rozkminienia czemu w to nie wchodzi
     this.webSocketService.messagesSubj.subscribe(message => {
@@ -94,6 +108,7 @@ export class ChatComponent implements OnInit {
   }
 
   logout() {
+
     this.authService.logout().subscribe(res => {
       this.router.navigate(['/login']);
     });
@@ -127,6 +142,7 @@ export class ChatComponent implements OnInit {
       conversation: conversationId ? conversationId : null
     }
     this.webSocketService.sendMessage(mess);
+    this.newMessage='';
   }
 
   openToSettings() {
@@ -160,9 +176,86 @@ export class ChatComponent implements OnInit {
     });
   }
 
-  protected readonly localStorage = localStorage;
+  readonly localStorage = localStorage;
+
 
   getMessages(): Message[] | undefined {
     return this.conversations.find(conversation => conversation.id == this.currentConversation)?.messages;
   }
+
+  getOtherUserNameByConversation(conversation: Conversation){
+    let users = conversation.participants;
+    let otherUser;
+    if(users && users.length == 2){
+      if(users[0].id==localStorage.getItem("id")){
+        otherUser = users[1];
+      } else{
+        otherUser = users[0];
+      }
+    }
+    if(otherUser){
+      return otherUser.name;
+    }
+    return "error 500, no user found";
+  }
+
+  getLoggedUserName(){
+
+    if(this.loggedUser){
+      return this.loggedUser.name;
+    }
+
+    return "error 500, no user found";
+  }
+
+  getLastMessageInSideBarByMessages(messages: Message[]){
+
+    let lastMessage;
+
+    if(messages){
+      lastMessage = messages.at(messages.length-1);
+    } else{
+      return "";
+    }
+
+    if(!lastMessage)
+      return "";
+
+    if(lastMessage.text.length < 50){
+      return lastMessage.text;
+    } else{
+      return lastMessage.text.slice(0,50) + "...";
+    }
+
+  }
+
+  getNameById(userId: string) {
+
+    let currentConversationObj;
+    let conversations = this.conversations;
+
+    if(conversations){
+      for (let i = 0; i < this.conversations.length; i++) {
+        if(this.conversations.at(i)?.id === this.currentConversation){
+          currentConversationObj = this.conversations.at(i);
+        }
+      }
+    }
+
+    let users;
+    if(currentConversationObj){
+      users = currentConversationObj.participants;
+    }
+
+    if(users){
+      for (let i = 0; i < 2; i++) {
+        if(userId === users[i].id){
+          return users[i].name;
+        }
+      }
+    }
+
+    return "";
+  }
 }
+

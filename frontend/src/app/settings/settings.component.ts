@@ -24,16 +24,4 @@ export class SettingsComponent {
   deleteAccount() {
     // Logika usuwania konta
   }
-
-  setPhoto() {
-    // Logika ustawiania zdjęcia
-  }
-
-  onFileSelected($event: Event) {
-
-  }
-
-  uploadPhoto() {
-
-  }
 }
