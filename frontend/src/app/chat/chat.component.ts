@@ -45,7 +45,8 @@ export class ChatComponent implements OnInit {
     this.userSearchControl.valueChanges.pipe(
       debounceTime(500),
     ).subscribe(searchTerm => {
-      this.searchUsers(searchTerm);
+      console.log(searchTerm);
+      this.searchUsers(searchTerm.replace("#","%23"));
     })
 
   }
