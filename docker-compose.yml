@@ -1,0 +1,51 @@
+version: '3.7'
+services:
+  app-serv:
+    build:
+      context: backend
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    restart: on-failure
+    environment:
+      - URL=jdbc:postgresql://db_chat:5432/postgres
+      - USERNAME=postgres
+      - PASSWORD=baza
+    depends_on:
+      - db_chat
+
+    networks:
+      - back
+      - front
+
+  app-cli:
+    build:
+      context: frontend
+      dockerfile: Dockerfile
+    ports:
+      - "4200:80"
+    restart: always
+    networks:
+      - front
+    depends_on:
+      - app-serv
+
+  db_chat:
+    image: postgres:latest
+    container_name: db_chat
+    ports:
+      - "5432:5432"
+    restart: always
+    environment:
+      - POSTGRES_PASSWORD=baza
+      - POSTGRES_USER=postgres
+    networks:
+      - back
+    volumes:
+      - db_chat:/var/lib/postgresql/data
+networks:
+  back:
+  front:
+volumes:
+  db_chat:
+    driver: local
